@@ -1,4 +1,6 @@
 import { defineStore } from 'pinia'
+import { store } from '@/store'
+// import { getToken } from '@/utils/http/cookie'
 
 async function checkUserLoginInfo() {
   return {
@@ -7,18 +9,24 @@ async function checkUserLoginInfo() {
   }
 }
 
-export default defineStore('user', {
+const useUserStore = defineStore({
+  id: 'user',
   state: () => ({
     isLogin: false,
     userInfo: {}
   }),
   actions: {
+    changeLoginState(state: boolean) {
+      this.isLogin = state
+    },
+    changeUserInfoObj(data: any) {
+      this.userInfo = Object.assign({}, this.userInfo, data)
+    },
     getUserInfo() {
+      console.log('getUserInfo');
       return checkUserLoginInfo().then((res) => {
         if (res.success) {
-          // 改变登录状态
           this.isLogin = true
-          // 保存用户信息
           this.userInfo = res.data
         } else {
           this.isLogin = false
@@ -27,3 +35,9 @@ export default defineStore('user', {
     }
   },
 })
+
+export default function useUserStoreWithOut() {
+  return useUserStore(store)
+}
+
+

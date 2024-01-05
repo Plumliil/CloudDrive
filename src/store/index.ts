@@ -7,10 +7,21 @@ import useUploadFileStore from './module/uploadFile' //  拖拽上传文件模�
 // import { allColumnList } from '@/libs/map.js'
 
 
-export default {
-  useUserStore,
+export {
   useFileListStore,
   useSideMenuStore,
   useCommonStore,
   useUploadFileStore
 }
+
+import type { App } from 'vue'
+import { createPinia } from 'pinia'
+
+const store = createPinia()
+
+export default function setupStore(app: App<Element>) {
+  app.use(store)
+}
+
+export { store, useUserStore }
+

@@ -1,18 +1,26 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import { type MenuData } from '@idux/components/menu'
-import { type ProLayoutType } from '@idux/pro/layout'
 import AppLogo from '@/assets/images/logo.svg'
+import { type LayoutSiderProps } from '@idux/components/layout'
+
 const logo = {
   image: AppLogo,
   title: 'CloudDrive',
-  link: '/pro/layout/zh',
+  link: '/',
 }
+const NoLeyoutRoutes = ['/login','/']
+const showLayoutFlag = computed(() => {
+  return !NoLeyoutRoutes.includes(route.path)
+})
+const sider = reactive<LayoutSiderProps>({
+  pointer: true,
+  'onUpdate:collapsed': (collapsed, changeType) => {
+    console.log(collapsed, changeType)
+    sider.pointer = changeType === 'pointer'
+  },
+})
+const route = useRoute()
 
-const type = ref<ProLayoutType>('mixin')
-
-const activeKey = ref()
-const collapsed = ref(false)
 const dataSource: MenuData[] = [
   {
     type: 'sub',
@@ -56,29 +64,27 @@ const dataSource: MenuData[] = [
   },
   { type: 'item', key: 'item2', icon: 'mail', label: 'Item 2' },
 ]
+console.log('route', route);
 </script>
 
 <template>
-  <div class="bg-blue-500">
-    <IxProLayout v-model:activeKey="activeKey" v-model:collapsed="collapsed" :logo="logo" :menus="dataSource" type="mixin"
-      theme="light" style="height: 100vh;">
-      <template #itemLabel="item">
-        <router-link to="#pro-layout-demo-type">{{ item.label }}</router-link>
-      </template>
-      <template v-if="type !== 'sider'" #headerExtra>
-        <IxButtonGroup align="center" block justify="space-between" :gap="8" mode="text" :vertical="collapsed">
-          <IxButton icon="search">搜索</IxButton>
-          <IxButton icon="alert">消息</IxButton>
-          <IxButton icon="setting">设置</IxButton>
-        </IxButtonGroup>
-      </template>
-      <template #siderFooter>
-        <IxLayoutSiderTrigger />
-      </template>
-      <IxSpace block vertical>
-        <router-view class="main-content"></router-view>
-      </IxSpace>
-    </IxProLayout>
+  <div class="h-screen w-screen">
+    <IxMessageProvider>
+      <IxProLayout :logo="logo" :menus="showLayoutFlag ? dataSource : []" :type="showLayoutFlag ? 'mixin' : 'header'"
+        theme="light" :sider="sider">
+        <template #itemLabel="item">
+          <router-link to="#pro-layout-demo-type">{{ item.label }}</router-link>
+        </template>
+        <template #headerExtra>
+          <IxButtonGroup align="center" block justify="space-between" :gap="8" mode="text">
+            <IxButton icon="search">搜索</IxButton>
+            <IxButton icon="alert">消息</IxButton>
+            <IxButton icon="setting">设置</IxButton>
+            <IxButton icon="setting"><router-link to="/login">登录</router-link></IxButton>
+          </IxButtonGroup>
+        </template>
+        <router-view></router-view>
+      </IxProLayout>
+    </IxMessageProvider>
   </div>
 </template>
-
