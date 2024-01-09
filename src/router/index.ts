@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '@/views/Home.vue'
-// import { useUserStoreWithOut } from '@/store/index'
-
+import { useUserStoreWithOut, useCommonStoreWithOut } from '@/store/index'
 // const userStore = useUserStoreWithOut()
+const commonStore = useCommonStoreWithOut()
 const routes = [
   // {
   //   path: '/',
@@ -17,38 +17,12 @@ const routes = [
   {
     path: '/login',
     name: 'Login',
-    component: import( '@/views/Login.vue'),
+    component: import('@/views/Login.vue'),
   },
   {
     path: '/file',
     name: 'File',
     component: import('@/views/File.vue'),
-    // children: [
-    //   {
-    //     path: 'all', 
-    //     component: import( '@/views/File.vue'),
-    //   },
-    //   {
-    //     path: 'image', 
-    //     component: import( '@/views/File.vue'),
-    //   },
-    //   {
-    //     path: 'docs', 
-    //     component: import( '@/views/File.vue'),
-    //   },
-    //   {
-    //     path: 'video', 
-    //     component: import( '@/views/File.vue'),
-    //   },
-    //   {
-    //     path: 'audio', 
-    //     component: import( '@/views/File.vue'),
-    //   },
-    //   {
-    //     path: 'other', 
-    //     component: import( '@/views/File.vue'),
-    //   },
-    // ]
   },
   // {
   //   path: '/upload',
@@ -71,7 +45,10 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   // 当前路由需要登录才可进入
-
+  // next({
+  //   path: commonStore.curRoute || '/',
+  //   query: { Rurl: to.fullPath } //  将to参数中的url传递给login页面进行操作
+  // })
   if (to.matched.some((m) => m.meta.requireAuth)) {
 
     // 调用获取用户登录状态和信息的接口

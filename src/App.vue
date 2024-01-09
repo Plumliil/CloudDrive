@@ -35,6 +35,14 @@ const menuHandluer = (options: MenuClickOptions) => {
  */
 const logout = () => {
   userStore.changeLoginState(false)
+  userStore.changeState({
+    key: 'isLogin',
+    value: false
+  })
+  commonStore.changeState({
+    key: 'curRoute',
+    value: '/'
+  })
   router.push('/login')
   // message.success('退出登录成功！')
   // this.$common.removeCookies(this.$config.tokenKeyName)
@@ -47,7 +55,7 @@ const logout = () => {
 <template>
   <div class="h-screen w-screen">
     <IxMessageProvider>
-      <IxProLayout :onMenuClick="menuHandluer" :activeKey="commonStore.curRoute" :logo="logo"
+      <IxProLayout clas="m-0 p-0 bg-blue-500" :onMenuClick="menuHandluer" :activeKey="commonStore.curRoute" :logo="logo"
         :menus="userStore.isLogin ? dataSource : []" :type="showLayoutFlag ? 'both' : 'header'" theme="light">
         <template #itemLabel="item">
           <router-link :to="item.key">{{ item.label }}</router-link>
@@ -62,8 +70,17 @@ const logout = () => {
             <IxButton @click="logout">退出</IxButton>
           </IxButtonGroup>
         </template>
-        <router-view></router-view>
+        <router-view class="m-0 p-0"></router-view>
       </IxProLayout>
     </IxMessageProvider>
   </div>
 </template>
+<style scoped>
+:deep(.ix-layout-content) {
+  padding: 0;
+}
+
+:deep(.ix-pro-layout-content) {
+  padding: 0;
+}
+</style>
