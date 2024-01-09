@@ -1,11 +1,12 @@
 import { createGlobalConfig } from '@idux/components/config'
 import { createApp } from 'vue'
 import router from '@/router'
-import store from '@/store'
+// import store from '@/store'
 import App from './App.vue'
 import Idux from "./idux";
 import './tailwind.css'
 import { Button ,Upload} from 'ant-design-vue';
+import setupStore from '@/store'
 /**
  * 1. 你可以用任意请求库来替换掉 fetch.
  * 2. 你可以将 @idux 的默认图标文件拷贝到 `public/idux-icons` 目录下，当然也可以是任意其他目录. 记得替换掉请求 url 的路径即可。
@@ -23,10 +24,11 @@ const globalConfig = createGlobalConfig({
 
 const app = createApp(App);
 
+setupStore(app)
 app.use(Button);
 app.use(Upload);
 
-app.use(store);
+// app.use(store);
 app.use(Idux);
 app.use(globalConfig);
 app.use(router);

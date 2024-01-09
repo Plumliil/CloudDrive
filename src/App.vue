@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { type MenuData } from '@idux/components/menu'
+import { MenuClickOptions, type MenuData } from '@idux/components/menu'
 import AppLogo from '@/assets/images/logo.svg'
-import { type LayoutSiderProps } from '@idux/components/layout'
-import { useUserStore } from './store';
+import { useUserStoreWithOut, useCommonStoreWithOut } from '@/store';
 import router from './router';
 // import { useMessage } from '@idux/components/message'
 const logo = {
@@ -11,37 +10,25 @@ const logo = {
   link: '/',
 }
 // const message = useMessage()
-const userStore = useUserStore()
+const route = useRoute()
+const userStore = useUserStoreWithOut()
+const commonStore = useCommonStoreWithOut()
 const NoLeyoutRoutes = ['/login']
 const showLayoutFlag = computed(() => {
   return !NoLeyoutRoutes.includes(route.path) || !userStore.isLogin
 })
-const sider = reactive<LayoutSiderProps>({
-  pointer: false,
-})
-const route = useRoute()
-
 const dataSource: MenuData[] = [
   { type: 'item', key: '/', icon: 'home', label: '首页' },
-  {
-    type: 'sub', key: '/file', icon: 'cloud-server', label: '网盘', children: [
-      {
-        type: 'sub', key: 'main', icon: 'folder-open', label: '我的文件',
-        children: [
-          { key: '/file?type=all', icon: 'folder', label: '全部' },
-          { key: '/file?type=image', icon: 'file-image', label: '图片' },
-          { key: '/file?type=docs', icon: 'audit', label: '文档' },
-          { key: '/file?type=video', icon: 'play-circle', label: '视频' },
-          { key: '/file?type=audio', icon: 'customer-service', label: '音乐' },
-          { key: '/file?type=other', icon: 'expand-all', label: '其他' },
-        ],
-      },
-      { key: 'recycle ', icon: 'delete', label: '回收站' },
-      { key: 'share', icon: 'send', label: '我的分享' },
-    ],
-  },
-  { type: 'item', key: 'doc', icon: 'file-text', label: '文档' },
+  { type: 'item', key: '/file', icon: 'cloud-server', label: '网盘' },
+  { type: 'item', key: '/doc', icon: 'file-text', label: '文档' },
 ]
+const menuHandluer = (options: MenuClickOptions) => {
+  console.log('options', options);
+  commonStore.changeState({
+    key: 'curRoute',
+    value: options.key
+  })
+}
 /**
  * 退出登录
  * @description 清除 cookie 存放的 token  并跳转到登录页面
@@ -60,8 +47,8 @@ const logout = () => {
 <template>
   <div class="h-screen w-screen">
     <IxMessageProvider>
-      <IxProLayout :logo="logo" :menus="userStore.isLogin ? dataSource : []" :type="showLayoutFlag ? 'both' : 'header'"
-        theme="light" :sider="sider">
+      <IxProLayout :onMenuClick="menuHandluer" :activeKey="commonStore.curRoute" :logo="logo"
+        :menus="userStore.isLogin ? dataSource : []" :type="showLayoutFlag ? 'both' : 'header'" theme="light">
         <template #itemLabel="item">
           <router-link :to="item.key">{{ item.label }}</router-link>
         </template>
@@ -74,15 +61,6 @@ const logout = () => {
             <IxButton>{{ userStore.userInfo.name }}</IxButton>
             <IxButton @click="logout">退出</IxButton>
           </IxButtonGroup>
-        </template>
-        <template #siderFooter>
-          <div class="flex w-full flex-col p-1 mb-3">
-            <IxProgress :percent="75" />
-            <div class="flex items-center justify-between">
-              <span>储存</span>
-              <span>50mb / 100mb</span>
-            </div>
-          </div>
         </template>
         <router-view></router-view>
       </IxProLayout>

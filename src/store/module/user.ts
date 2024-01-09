@@ -8,9 +8,15 @@ async function checkUserLoginInfo() {
     data: {}
   }
 }
-
+type UserStateType = {
+  isLogin: boolean
+  userInfo: {
+    name: string
+  }
+}
 const useUserStore = defineStore({
   id: 'user',
+  persist: true,
   state: () => ({
     isLogin: false,
     userInfo: {
@@ -18,6 +24,13 @@ const useUserStore = defineStore({
     }
   }),
   actions: {
+    changeState({ key, value }: { key: keyof UserStateType, value: any }) {
+      if (['userInfo'].includes(key)) {
+        this[key] = Object.assign({}, this[key], value)
+        return
+      }
+      this[key] = value
+    },
     changeLoginState(state: boolean) {
       this.isLogin = state
     },

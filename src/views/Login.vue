@@ -1,77 +1,58 @@
 <script setup lang='ts'>
-import { useUserStore } from '@/store';
+import { useUserStoreWithOut } from '@/store';
 import { useMessage } from '@idux/components/message'
-import CanvasNest from 'canvas-nest.js'
-interface LoginFormType {
-  tel: string,
-  password: string
-}
-const route = useRoute()
-const userStore = useUserStore()
-const loginForm = ref<LoginFormType>()
-// 配置
-const config = {
-  color: '136,21,77', // 线条颜色
-  pointColor: '136,21,77', // 节点颜色
-  opacity: 0.6, // 线条透明度
-  count: 99, // 线条数量
-  zIndex: -1 // 画面层级
-}
-
-const loginFormRules = {
-  tel: [
-    { required: true, message: '请输入手机号', trigger: 'blur' },
-  ],
-  password: [
-    { required: true, message: '请输入密码', trigger: 'blur' },
-    { min: 5, max: 20, message: '密码长度必须在5-20之间', trigger: 'blur' },
-  ],
-  isShowDragVerify: false,
-  isPassing: false,
-  loginBtnDisabled: true,
-  loginBtnLoading: false,
-}
-const url = computed(() => {
-  return 111111
-})
-
-const message = useMessage()
-console.log('route', route);
-onMounted(() => {
-  console.log('userStore', userStore.isLogin);
-  if (userStore.isLogin) {
-    message.info('登录成功 !')
-  } else {
-    // message.warning('请先登录 !')
-  }
-
-  nextTick(() => {
-    let element = document.getElementById('loginBackground')
-    new CanvasNest(element, config)
-  })
-})
-
-
 import { Validators, useFormGroup } from '@idux/cdk/forms'
 import requestHandler from '@/request';
 import router from '@/router';
 
-const { required, minLength, maxLength } = Validators
+interface LoginFormType {
+  tel: string,
+  password: string
+}
+const userStore = useUserStoreWithOut()
+
+// const loginFormRules = {
+//   tel: [
+//     { required: true, message: '请输入手机号', trigger: 'blur' },
+//   ],
+//   password: [
+//     { required: true, message: '请输入密码', trigger: 'blur' },
+//     { min: 5, max: 20, message: '密码长度必须在5-20之间', trigger: 'blur' },
+//   ],
+//   isShowDragVerify: false,
+//   isPassing: false,
+//   loginBtnDisabled: true,
+//   loginBtnLoading: false,
+// }
+
+const message = useMessage()
+
+// const { required, minLength, maxLength } = Validators
 
 const formGroup = useFormGroup({
-  username: ['', required],
-  password: ['', [required, minLength(6), maxLength(18)]],
+  // username: ['', required],
+  // password: ['', [required, minLength(6), maxLength(18)]],
   remember: [true],
 })
 
 const login = async () => {
-  console.log('formGroup', formGroup.valid.value);
-
-  const res: any = await requestHandler("api/user/login", "post", formGroup.valid.value);
+  console.log('formGroup', formGroup.valid.value, userStore);
+  // const res: any = await requestHandler("api/user/login", "post", formGroup.valid.value);
+  const res = {
+    success: true
+  }
   if (res.success) {
     message.success("登录成功")
-    userStore.changeLoginState(true)
-    userStore.changeUserInfo(res.userInfo)
+    userStore.changeState({
+      key: 'isLogin',
+      value: true
+    })
+    userStore.changeState({
+      key: 'userInfo',
+      value: {
+        name: 'Admin_Li'
+      }
+    })
     router.replace('/')
   } else {
     formGroup.markAsDirty()

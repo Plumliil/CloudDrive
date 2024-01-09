@@ -3,14 +3,14 @@ import { store } from '@/store'
 // import { getToken } from '@/utils/http/cookie'
 
 type StateType = {
-  curRoute: '/' | '/file' | '/doc'
+  displayType: 'list' | 'table' | 'timeLine'
 }
-const useCommonStore = defineStore({
-  id: 'common',
+const useFileStore = defineStore({
+  id: 'file',
   persist: true,
   state: () => {
     const state: StateType = {
-      curRoute: '/'
+      displayType: 'list'
     }
     return state
   },
@@ -21,8 +21,8 @@ const useCommonStore = defineStore({
   },
 })
 
-export default function useCommonStoreWithOut() {
-  return useCommonStore(store)
+export default function useFileStoreWithOut() {
+  return useFileStore(store)
 }
 
 

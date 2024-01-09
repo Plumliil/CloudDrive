@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '@/views/Home.vue'
-import { useUserStore } from '@/store/index'
+// import { useUserStoreWithOut } from '@/store/index'
 
-const userStore = useUserStore()
+// const userStore = useUserStoreWithOut()
 const routes = [
   // {
   //   path: '/',
