@@ -13,25 +13,27 @@ const useUserStore = defineStore({
   id: 'user',
   state: () => ({
     isLogin: false,
-    userInfo: {}
+    userInfo: {
+      name: ''
+    }
   }),
   actions: {
     changeLoginState(state: boolean) {
       this.isLogin = state
     },
-    changeUserInfoObj(data: any) {
+    changeUserInfo(data: any) {
       this.userInfo = Object.assign({}, this.userInfo, data)
     },
     getUserInfo() {
       console.log('getUserInfo');
-      return checkUserLoginInfo().then((res) => {
-        if (res.success) {
-          this.isLogin = true
-          this.userInfo = res.data
-        } else {
-          this.isLogin = false
-        }
-      })
+      // return checkUserLoginInfo().then((res) => {
+      //   if (res.success) {
+      //     this.isLogin = true
+      //     this.userInfo = res.data
+      //   } else {
+      //     this.isLogin = false
+      //   }
+      // })
     }
   },
 })

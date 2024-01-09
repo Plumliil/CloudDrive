@@ -53,6 +53,8 @@ onMounted(() => {
 
 
 import { Validators, useFormGroup } from '@idux/cdk/forms'
+import requestHandler from '@/request';
+import router from '@/router';
 
 const { required, minLength, maxLength } = Validators
 
@@ -62,10 +64,15 @@ const formGroup = useFormGroup({
   remember: [true],
 })
 
-const login = () => {
-  message.success('登录成功 !')
-  if (formGroup.valid.value) {
-    console.log('login', formGroup.getValue())
+const login = async () => {
+  console.log('formGroup', formGroup.valid.value);
+
+  const res: any = await requestHandler("api/user/login", "post", formGroup.valid.value);
+  if (res.success) {
+    message.success("登录成功")
+    userStore.changeLoginState(true)
+    userStore.changeUserInfo(res.userInfo)
+    router.replace('/')
   } else {
     formGroup.markAsDirty()
   }
@@ -93,7 +100,8 @@ const passwordVisible = ref(false)
         <IxCheckbox control="remember">Remember me</IxCheckbox>
       </IxFormItem>
       <IxFormItem style="margin: 8px 0" messageTooltip>
-        <IxButton mode="primary" class="bg-none text-blue-500 hover:bg-blue-500 hover:text-white duration-500" block type="submit" @click="login">Login</IxButton>
+        <IxButton mode="primary" class="bg-none text-blue-500 hover:bg-blue-500 hover:text-white duration-500" block
+          type="submit" @click="login">Login</IxButton>
       </IxFormItem>
       <IxRow>
         <IxCol span="12">
@@ -106,17 +114,3 @@ const passwordVisible = ref(false)
     </IxForm>
   </div>
 </template>
-
-<style scoped>
-/* .demo-form {
-  padding: 20px 10px;
-  max-width: 300px;
-  margin: 0 auto;
-  background-color: red;
-  margin-top: 100px;
-} */
-
-.text-right {
-  text-align: right;
-}
-</style>

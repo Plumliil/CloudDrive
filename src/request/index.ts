@@ -4,8 +4,11 @@ import axios, { AxiosResponse, AxiosRequestConfig } from 'axios'
 import { useMessage } from '@idux/components/message'
 const message = useMessage()
 const serviceAxios = axios.create({
-  baseURL: 'http://jsonplaceholder.typicode.com', //这里我简写了  全局配置即可
+  baseURL: '/', //这里我简写了  全局配置即可
   timeout: 5000,
+  headers: {
+    'Access-Control-Allow-Origin': '*'
+  }
 })
 //请求拦截器
 serviceAxios.interceptors.request.use(
@@ -19,14 +22,11 @@ serviceAxios.interceptors.request.use(
 )
 serviceAxios.interceptors.response.use(
   (response: AxiosResponse) => {
-    // response.headers['Access-Control-Allow-Origin'] = '*'
-    console.log(response);
     if (response.status == 200) {
       return response.data
     } else {
       return requestHandler
     }
-
   }, ((error: any) => {
     if (error && error.response) {
       switch (error.response.status) {

@@ -4,25 +4,56 @@ import { useUserStore } from '@/store/index'
 
 const userStore = useUserStore()
 const routes = [
-  {
-    path: '/',
-    name: 'Upload',
-    component: import(/* webpackChunkName: "login" */ '@/views/Upload.vue'),
-  },
   // {
   //   path: '/',
-  //   name: 'Home',
-  //   component: Home,
+  //   name: 'Upload',
+  //   component: import( '@/views/Upload.vue'),
   // },
+  {
+    path: '/',
+    name: 'Home',
+    component: Home,
+  },
   {
     path: '/login',
     name: 'Login',
-    component: import(/* webpackChunkName: "login" */ '@/views/Login.vue'),
+    component: import( '@/views/Login.vue'),
+  },
+  {
+    path: '/file',
+    name: 'File',
+    component: import('@/views/File.vue'),
+    // children: [
+    //   {
+    //     path: 'all', 
+    //     component: import( '@/views/File.vue'),
+    //   },
+    //   {
+    //     path: 'image', 
+    //     component: import( '@/views/File.vue'),
+    //   },
+    //   {
+    //     path: 'docs', 
+    //     component: import( '@/views/File.vue'),
+    //   },
+    //   {
+    //     path: 'video', 
+    //     component: import( '@/views/File.vue'),
+    //   },
+    //   {
+    //     path: 'audio', 
+    //     component: import( '@/views/File.vue'),
+    //   },
+    //   {
+    //     path: 'other', 
+    //     component: import( '@/views/File.vue'),
+    //   },
+    // ]
   },
   // {
   //   path: '/upload',
   //   name: 'Upload',
-  //   component: import(/* webpackChunkName: "login" */ '@/views/Upload.vue'),
+  //   component: import( '@/views/Upload.vue'),
   // },
   // {
   //   path: '/about',
@@ -40,7 +71,6 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   // 当前路由需要登录才可进入
-  console.log('to', to);
 
   if (to.matched.some((m) => m.meta.requireAuth)) {
 
