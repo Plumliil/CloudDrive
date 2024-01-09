@@ -4,52 +4,26 @@ import Home from '@/views/Home.vue'
 
 // const userStore = useUserStoreWithOut()
 const routes = [
-  // {
-  //   path: '/',
-  //   name: 'Upload',
-  //   component: import( '@/views/Upload.vue'),
-  // },
   {
     path: '/',
-    name: 'Home',
-    component: Home,
+    name: 'Upload',
+    component: import( '@/views/Upload.vue'),
   },
-  {
-    path: '/login',
-    name: 'Login',
-    component: import( '@/views/Login.vue'),
-  },
-  {
-    path: '/file',
-    name: 'File',
-    component: import('@/views/File.vue'),
-    // children: [
-    //   {
-    //     path: 'all', 
-    //     component: import( '@/views/File.vue'),
-    //   },
-    //   {
-    //     path: 'image', 
-    //     component: import( '@/views/File.vue'),
-    //   },
-    //   {
-    //     path: 'docs', 
-    //     component: import( '@/views/File.vue'),
-    //   },
-    //   {
-    //     path: 'video', 
-    //     component: import( '@/views/File.vue'),
-    //   },
-    //   {
-    //     path: 'audio', 
-    //     component: import( '@/views/File.vue'),
-    //   },
-    //   {
-    //     path: 'other', 
-    //     component: import( '@/views/File.vue'),
-    //   },
-    // ]
-  },
+  // {
+  //   path: '/',
+  //   name: 'Home',
+  //   component: Home,
+  // },
+  // {
+  //   path: '/login',
+  //   name: 'Login',
+  //   component: import( '@/views/Login.vue'),
+  // },
+  // {
+  //   path: '/file',
+  //   name: 'File',
+  //   component: import('@/views/File.vue'),
+  // },
   // {
   //   path: '/upload',
   //   name: 'Upload',
