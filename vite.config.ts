@@ -43,7 +43,7 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
       '/fileApi': {
-        target: 'http://localhost:44345',
+        target: 'http://192.168.118.177:8080',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/fileApi/, ''),
       },

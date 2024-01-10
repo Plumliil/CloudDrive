@@ -63,16 +63,40 @@ const uploadChunks = async (
   hash: string,
   params: UploadRequestOption
 ) => {
+  console.log('params', params);
+
+  const getUploadParams = (curChunk: number, file: any) => ({
+    // @ts-ignore
+    size: params.file.size,
+    chunks: chunks.length,
+    chunk: curChunk,
+    md5: hash,
+    file: file,
+    // @ts-ignore
+    type: params.file.type,
+    // @ts-ignore
+    id: params.file.uid,
+    // @ts-ignore
+    name: params.file.name,
+    // @ts-ignore
+    lastModifiedDate: params.file.lastModifiedDate,
+  })
   // 循环操作——循环发请求，发请求之前需要生成 FormData 类型数据
-  const requests = chunks.map((item) => {
+  const requests = chunks.map((item, index) => {
     // 生成 formData
     const form = new FormData();
-    form.append("chunk", item.chunk, item.name); // 只能需要加入 name 为什么? 因为后端用了 eggjs
+
+    form.append("file", params.file);
+    form.append("md5", hash);
+    console.log('form.getAll("md5")', form.get("md5"), form.get("file"));
+
+    // console.log('"chunk", item.chunk', "chunk", form);
     // aggjs 直接内置了 multi-part 插件，直接会解析 formData 文件
     // 如果不穿name 后端回报 Invalid file name
-    return {
-      form
-    };
+    return getUploadParams(index, form)
+    // return {
+    //   form
+    // };
   });
   // 通过 map 循环生成了若干个，对象  对象里面有form
   // 循环发请求——每个请求上传一个分片内容
@@ -81,7 +105,10 @@ const uploadChunks = async (
   let index = 0;
   let taskPool: Array<Promise<any>> = []; // 任务执行池
   while (index < requests.length) {
-    const task = requestHandler("/upload", "post", requests[index].form); // 这个一个认任务
+    // console.log('requests[index].form', requests[index].form)
+    // requests[index].form
+    // https://localhost:44345/Upload/ChunkUpload
+    const task = requestHandler("/fileApi/Upload/ChunkUpload", "post", requests[index]); // 这个一个认任务
     task.then(() => {
       // then 执行之后，意味着 请求已经完成， 将池子里面的任务移除掉
       taskPool.splice(taskPool.findIndex((i) => i === task));
@@ -95,10 +122,10 @@ const uploadChunks = async (
   }
   // 这个时候 要判断是不是已经上传完所以切片
   await Promise.all(taskPool); // 等待所以任务执行完毕
-  // 发送合并请求了
+  // // 发送合并请求了
   const file = params.file as File;
   const ext = file.name.substring(file.name.lastIndexOf(".") + 1); // 文件后缀，后面的扩展名
-  const { data } = await requestHandler("/mergeFile", "post", { hash, ext });
+  const { data } = await requestHandler("/fileApi/Upload/MergeFiles", "post", { hash, ext });
   if (params.onSuccess) {
     params.onSuccess(data);
   }
