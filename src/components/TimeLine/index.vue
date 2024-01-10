@@ -1,5 +1,9 @@
 <script setup lang='ts'>
 import vueLogo from "@/assets/vue.svg";
+import { FileDisplayPropsType } from "@/type";
+const props = withDefaults(defineProps<FileDisplayPropsType>(), {})
+console.log(props);
+
 </script>
 
 <template>

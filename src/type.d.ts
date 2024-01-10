@@ -1,6 +1,14 @@
-export type FileType = 'all' | 'image' | 'docs' | 'video' | 'audio' | 'other'
+import { LocationQueryValue } from 'vue-router';
+
+export type FileType = 'all' | 'image' | 'docs' | 'video' | 'audio' | 'other' | 'recycle' | 'share'
 export type FileDisPlayType = 'list' | 'table' | 'timeLine'
 export type BaseRouteType = '/' | '/file' | '/doc'
+
+export type FileDisplayPropsType = {
+  type: LocationQueryValue | LocationQueryValue[] | FileType
+  dataSource: FileDataType[]
+}
+
 
 export type FileDataType = {
   key: number

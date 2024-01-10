@@ -1,13 +1,14 @@
 <script lang="ts" setup>
-import { FileDataType } from '@/type';
+// import requestHandler from '@/request';
+import { FileDataType, FileDisplayPropsType } from '@/type';
 import { TableColumn, TableColumnSelectable } from '@idux/components/table'
 import { IxTag } from '@idux/components/tag'
 
+const props = withDefaults(defineProps<FileDisplayPropsType>(), {})
 
 const selectableColumn = reactive<TableColumnSelectable<FileDataType>>({
   type: 'selectable',
   align: 'center',
-  disabled: record => record.key === 4,
   multiple: true,
   showIndex: false,
   onChange: (selectedKeys, selectedRows) => console.log(selectedKeys, selectedRows),
@@ -40,26 +41,17 @@ const columns: TableColumn<FileDataType>[] = [
   },
 ]
 
-const fullData: FileDataType[] = []
-for (let index = 0; index < 30; index++) {
-  fullData.push({
-    key: index,
-    name: `Edrward ${index}`,
-    type: `London Park no. ${index}`,
-    dateChanged: ['nice', 'developer'],
-  })
-}
-
-const data = ref<FileDataType[]>(fullData)
-
 const selectedRowKeys = ref([1])
-
+onMounted(() => {
+  console.log('props.type',props.type);
+  // const { data } = await requestHandler("/checkFile", "post", { hash })
+})
 
 </script>
 
 <template>
   <IxSpace vertical class="pt-4" style="width: 98.6%;background-color: #fff;margin: 0 0.7%;margin-top: -10px;">
-    <IxTable v-model:selectedRowKeys="selectedRowKeys" :columns="columns" :dataSource="data">
+    <IxTable v-model:selectedRowKeys="selectedRowKeys" :columns="columns" :dataSource="props.dataSource">
       <template #name="{ value }">
         <IxButton mode="link">{{ value }}</IxButton>
       </template>

@@ -6,15 +6,15 @@ import FileTable from '@/components/FileTable/index.vue'
 import FileList from '@/components/FileList/index.vue'
 import TimeLine from '@/components/TimeLine/index.vue'
 import { useFileStoreWithOut } from '@/store';
-import { FileDisPlayType, FileType } from '@/type'
+import { FileDataType, FileDisPlayType, FileType } from '@/type'
 import { LocationQueryValue } from 'vue-router'
 
 const route = useRoute();
 const fileStore = useFileStoreWithOut()
 const searchValue = ref('')
 const visible = ref(false)
-const dataSource = ref([])
-const activeRouteType = ref<LocationQueryValue | LocationQueryValue[] | FileType>()
+const dataSource = ref<FileDataType[]>([])
+const activeRouteType = ref<LocationQueryValue | LocationQueryValue[] | FileType>(fileStore.displayType)
 
 const rootMenuSubKeys: VKey[] = ['mine', 'recycle', 'share']
 const expandedKeys = ref<VKey[]>(['mine'])
@@ -38,8 +38,8 @@ const menuData: MenuData[] = [
       { key: '/file?type=other', icon: 'expand-all', label: '其他' },
     ],
   },
-  { key: 'recycle ', icon: 'delete', label: '回收站' },
-  { key: 'share', icon: 'send', label: '我的分享' },
+  { key: '/file?type=recycle ', icon: 'delete', label: '回收站' },
+  { key: '/file?type=share', icon: 'send', label: '我的分享' },
 ]
 const fileDisplayType: RadioData[] = [
   { key: 'list', label: '列表' },
@@ -90,15 +90,15 @@ watch(() => route.query.type, (n, o) => {
     <IxLayoutContent class="p-0 m-0">
       <IxRow class="bg-white m-3 p-2">
         <IxCol class="flex justify-start" :span="12">
-          <IxSpace align="center">
+          <IxSpace align="center" class="overflow-x-auto">
             <IxButton mode="primary" class="text-blue-500 active:text-white hover:text-white">上传</IxButton>
             <IxButton mode="primary" class="text-blue-500 active:text-white hover:text-white">新建文件夹</IxButton>
-            <IxButton mode="primary" class="text-blue-500 active:text-white hover:text-white">新建在线文档</IxButton>
+            <!-- <IxButton mode="primary" class="text-blue-500 active:text-white hover:text-white">新建在线文档</IxButton>
             <IxButton mode="primary" class="text-blue-500 active:text-white hover:text-white">批量删除</IxButton>
             <IxButton mode="primary" class="text-blue-500 active:text-white hover:text-white">批量移动</IxButton>
             <IxButton mode="primary" class="text-blue-500 active:text-white hover:text-white">下载</IxButton>
             <IxButton mode="primary" class="text-blue-500 active:text-white hover:text-white">批量下载</IxButton>
-            <IxButton mode="primary" class="text-blue-500 active:text-white hover:text-white">分享</IxButton>
+            <IxButton mode="primary" class="text-blue-500 active:text-white hover:text-white">分享</IxButton> -->
           </IxSpace>
         </IxCol>
         <IxCol class="flex justify-end pr-4" :span="12">
@@ -128,8 +128,8 @@ watch(() => route.query.type, (n, o) => {
         </IxCol>
       </IxRow>
       <FileTable v-if="fileStore.displayType === 'table'" :type="activeRouteType" :dataSource="dataSource" />
-      <FileList v-else-if="fileStore.displayType === 'list'" :dataSource="dataSource" />
-      <TimeLine v-else-if="fileStore.displayType === 'timeLine'" :dataSource="dataSource" />
+      <FileList v-else-if="fileStore.displayType === 'list'" :type="activeRouteType" :dataSource="dataSource" />
+      <TimeLine v-else-if="fileStore.displayType === 'timeLine'" :type="activeRouteType" :dataSource="dataSource" />
     </IxLayoutContent>
   </IxLayout>
 </template>
