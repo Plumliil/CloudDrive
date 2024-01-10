@@ -17,9 +17,9 @@ const NoLeyoutRoutes = ['/login']
 const showLayoutFlag = computed(() => {
   return !NoLeyoutRoutes.includes(route.path) || !userStore.isLogin
 })
-const dataSource: MenuData[] = [
+const menuData: MenuData[] = [
   { type: 'item', key: '/', icon: 'home', label: '首页' },
-  { type: 'item', key: '/file', icon: 'cloud-server', label: '网盘' },
+  { type: 'item', key: '/file?type=all', icon: 'cloud-server', label: '网盘' },
   { type: 'item', key: '/doc', icon: 'file-text', label: '文档' },
 ]
 const menuHandluer = (options: MenuClickOptions) => {
@@ -56,7 +56,7 @@ const logout = () => {
   <div class="h-screen w-screen">
     <IxMessageProvider>
       <IxProLayout clas="m-0 p-0 bg-blue-500" :onMenuClick="menuHandluer" :activeKey="commonStore.curRoute" :logo="logo"
-        :menus="userStore.isLogin ? dataSource : []" :type="showLayoutFlag ? 'both' : 'header'" theme="light">
+        :menus="userStore.isLogin ? menuData : []" :type="showLayoutFlag ? 'both' : 'header'" theme="light">
         <template #itemLabel="item">
           <router-link :to="item.key">{{ item.label }}</router-link>
         </template>

@@ -4,7 +4,7 @@ import axios, { AxiosResponse, AxiosRequestConfig } from 'axios'
 import { useMessage } from '@idux/components/message'
 const message = useMessage()
 const serviceAxios = axios.create({
-  baseURL: '/', //这里我简写了  全局配置即可
+  baseURL: '/',
   timeout: 5000,
   headers: {
     'Access-Control-Allow-Origin': '*'

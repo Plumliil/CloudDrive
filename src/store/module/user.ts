@@ -1,17 +1,12 @@
 import { defineStore } from 'pinia'
 import { store } from '@/store'
+import { UserStoreType } from '@/type'
 // import { getToken } from '@/utils/http/cookie'
 
 async function checkUserLoginInfo() {
   return {
     success: true,
     data: {}
-  }
-}
-type UserStateType = {
-  isLogin: boolean
-  userInfo: {
-    name: string
   }
 }
 const useUserStore = defineStore({
@@ -24,7 +19,7 @@ const useUserStore = defineStore({
     }
   }),
   actions: {
-    changeState({ key, value }: { key: keyof UserStateType, value: any }) {
+    changeState({ key, value }: { key: keyof UserStoreType, value: any }) {
       if (['userInfo'].includes(key)) {
         this[key] = Object.assign({}, this[key], value)
         return

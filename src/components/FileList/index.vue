@@ -1,16 +1,10 @@
 <script lang="ts" setup>
+import { FileDataType } from '@/type';
 import { TableColumn, TableColumnSelectable } from '@idux/components/table'
 import { IxTag } from '@idux/components/tag'
 
-interface Data {
-  key: number
-  name: string
-  age: number
-  address: string
-  tags: string[]
-}
 
-const selectableColumn = reactive<TableColumnSelectable<Data>>({
+const selectableColumn = reactive<TableColumnSelectable<FileDataType>>({
   type: 'selectable',
   align: 'center',
   disabled: record => record.key === 4,
@@ -19,7 +13,7 @@ const selectableColumn = reactive<TableColumnSelectable<Data>>({
   onChange: (selectedKeys, selectedRows) => console.log(selectedKeys, selectedRows),
 })
 
-const columns: TableColumn<Data>[] = [
+const columns: TableColumn<FileDataType>[] = [
   selectableColumn,
   {
     title: '文件名',
@@ -28,13 +22,13 @@ const columns: TableColumn<Data>[] = [
   },
   {
     title: '类型',
-    dataKey: 'age',
-    width:200,
+    dataKey: 'type',
+    width: 200,
   },
   {
     title: '修改日期',
-    dataKey: 'tags',
-    width:200,
+    dataKey: 'dateChanged',
+    width: 200,
     customCell: ({ value }: { value: any }) =>
       value.map((tag: string) => {
         let color = tag.length > 5 ? 'warning' : 'success'
@@ -46,18 +40,17 @@ const columns: TableColumn<Data>[] = [
   },
 ]
 
-const fullData: Data[] = []
-for (let index = 0; index < 100; index++) {
+const fullData: FileDataType[] = []
+for (let index = 0; index < 30; index++) {
   fullData.push({
     key: index,
     name: `Edrward ${index}`,
-    age: 18 + index,
-    address: `London Park no. ${index}`,
-    tags: ['nice', 'developer'],
+    type: `London Park no. ${index}`,
+    dateChanged: ['nice', 'developer'],
   })
 }
 
-const data = ref<Data[]>(fullData)
+const data = ref<FileDataType[]>(fullData)
 
 const selectedRowKeys = ref([1])
 
@@ -66,7 +59,7 @@ const selectedRowKeys = ref([1])
 
 <template>
   <IxSpace vertical class="pt-4" style="width: 98.6%;background-color: #fff;margin: 0 0.7%;margin-top: -10px;">
-    <IxTable v-model:selectedRowKeys="selectedRowKeys"  :columns="columns" :dataSource="data">
+    <IxTable v-model:selectedRowKeys="selectedRowKeys" :columns="columns" :dataSource="data">
       <template #name="{ value }">
         <IxButton mode="link">{{ value }}</IxButton>
       </template>
@@ -81,7 +74,7 @@ const selectedRowKeys = ref([1])
 </template>
 
 <style scoped>
-:deep(.ix-table-table){
+:deep(.ix-table-table) {
   height: calc(100vh - 193px);
 }
 </style>

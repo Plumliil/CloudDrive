@@ -1,24 +1,20 @@
 import { defineStore } from 'pinia'
 import { store } from '@/store'
+import { FileStoreType } from '@/type'
 // import { getToken } from '@/utils/http/cookie'
-
-type StateType = {
-  displayType: 'list' | 'table' | 'timeLine',
-  routeType: 'other' | 'image'
-}
 const useFileStore = defineStore({
   id: 'file',
   persist: true,
   state: () => {
-    const state: StateType = {
+    const state: FileStoreType = {
       displayType: 'list',
       routeType: 'other'
     }
     return state
   },
   actions: {
-    changeState({ key, value }: { key: keyof StateType, value: any }) {
-      this[key] = value
+    changeState<K extends keyof FileStoreType>(payload: { key: K, value: FileStoreType[K] }) {
+      this.$patch({ [payload.key]: payload.value })
     }
   },
 })
