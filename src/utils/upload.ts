@@ -5,6 +5,9 @@ interface Chunks {
   name: string,
   chunk: Blob //File 分片之后就是 blob
 }
+function isFileType(value: any) {
+  return value instanceof File || value instanceof Blob;
+}
 const ChunkSize = 1024 * 1024 * 10 // 分片的大小
 //创建分片
 const createFileChunk = (file: File, hash: string, size = ChunkSize) => {
@@ -86,17 +89,17 @@ const uploadChunks = async (
     // 生成 formData
     const form = new FormData();
 
-    form.append("file", params.file);
+    // form.append("file", params.file);
+    form.append("file", item.chunk);
     form.append("md5", hash);
-    console.log('form.getAll("md5")', form.get("md5"), form.get("file"));
 
     // console.log('"chunk", item.chunk', "chunk", form);
     // aggjs 直接内置了 multi-part 插件，直接会解析 formData 文件
     // 如果不穿name 后端回报 Invalid file name
-    return getUploadParams(index, form)
-    // return {
-    //   form
-    // };
+    // return getUploadParams(index, item.chunk)
+    return {
+      form
+    };
   });
   // 通过 map 循环生成了若干个，对象  对象里面有form
   // 循环发请求——每个请求上传一个分片内容
@@ -108,7 +111,7 @@ const uploadChunks = async (
     // console.log('requests[index].form', requests[index].form)
     // requests[index].form
     // https://localhost:44345/Upload/ChunkUpload
-    const task = requestHandler("/fileApi/Upload/ChunkUpload", "post", requests[index]); // 这个一个认任务
+    const task = requestHandler("/fileApi/Upload/ChunkUpload", "post", requests[index].form); // 这个一个认任务
     task.then(() => {
       // then 执行之后，意味着 请求已经完成， 将池子里面的任务移除掉
       taskPool.splice(taskPool.findIndex((i) => i === task));
