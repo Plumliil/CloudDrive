@@ -8,7 +8,8 @@ const useFileStore = defineStore({
   state: () => {
     const state: FileStoreType = {
       displayType: 'list',
-      routeType: 'other'
+      columnsType:  ['name', 'type', 'size', 'changeDate', 'deleteDate'],
+      routeType: 'other',
     }
     return state
   },

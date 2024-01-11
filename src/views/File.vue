@@ -6,14 +6,195 @@ import FileTable from '@/components/FileTable/index.vue'
 import FileList from '@/components/FileList/index.vue'
 import TimeLine from '@/components/TimeLine/index.vue'
 import { useFileStoreWithOut } from '@/store';
-import { FileDataType, FileDisPlayType, FileType } from '@/type'
+import { ColumnType, FileDataType, FileDisPlayType, FileType } from '@/type'
 import { LocationQueryValue } from 'vue-router'
+
+const fileData: FileDataType[] = [
+  {
+    key: 1,
+    name: 'Document1',
+    type: 'doc',
+    size: '1024 KB',
+    deleteDate: ['2023-01-01', '2023-02-15'],
+    changeDate: ['2023-01-01', '2023-02-15']
+  },
+  {
+    key: 2,
+    name: 'Image1',
+    type: 'jpg',
+    size: '2048 KB',
+    deleteDate: ['2023-03-10'],
+    changeDate: ['2023-03-10']
+  },
+  {
+    key: 3,
+    name: 'Spreadsheet1',
+    type: 'xlsx',
+    size: '512 KB',
+    deleteDate: ['2023-05-20'],
+    changeDate: ['2023-05-20']
+  },
+  {
+    key: 4,
+    name: 'Video1',
+    type: 'mp4',
+    size: '4096 KB',
+    deleteDate: ['2023-07-08'],
+    changeDate: ['2023-07-08']
+  },
+  {
+    key: 5,
+    name: 'Presentation1',
+    type: 'ppt',
+    size: '3072 KB',
+    deleteDate: ['2023-09-15'],
+    changeDate: ['2023-09-15']
+  },
+  {
+    key: 6,
+    name: 'CodeFile1',
+    type: 'ts',
+    size: '256 KB',
+    deleteDate: ['2023-11-01'],
+    changeDate: ['2023-11-01']
+  },
+  {
+    key: 7,
+    name: 'Document2',
+    type: 'doc',
+    size: '1024 KB',
+    deleteDate: ['2023-01-01', '2023-02-15'],
+    changeDate: ['2023-01-01', '2023-02-15']
+  },
+  {
+    key: 8,
+    name: 'Image2',
+    type: 'jpg',
+    size: '2048 KB',
+    deleteDate: ['2023-03-10'],
+    changeDate: ['2023-03-10']
+  },
+  {
+    key: 9,
+    name: 'Spreadsheet2',
+    type: 'xlsx',
+    size: '512 KB',
+    deleteDate: ['2023-05-20'],
+    changeDate: ['2023-05-20']
+  },
+  {
+    key: 10,
+    name: 'Video2',
+    type: 'mp4',
+    size: '4096 KB',
+    deleteDate: ['2023-07-08'],
+    changeDate: ['2023-07-08']
+  },
+  {
+    key: 11,
+    name: 'Presentation2',
+    type: 'ppt',
+    size: '3072 KB',
+    deleteDate: ['2023-09-15'],
+    changeDate: ['2023-09-15']
+  },
+  {
+    key: 12,
+    name: 'CodeFile2',
+    type: 'ts',
+    size: '256 KB',
+    deleteDate: ['2023-11-01'],
+    changeDate: ['2023-11-01']
+  },
+  {
+    key: 33,
+    name: 'Spreadsheet17',
+    type: 'xlsx',
+    size: '512 KB',
+    changeDate: ['2024-05-20'],
+    deleteDate: ['2024-03-10']
+  },
+  {
+    key: 34,
+    name: 'Video17',
+    type: 'mp4',
+    size: '4096 KB',
+    changeDate: ['2024-07-08'],
+    deleteDate: ['2024-05-20']
+  },
+  {
+    key: 35,
+    name: 'Presentation17',
+    type: 'ppt',
+    size: '3072 KB',
+    changeDate: ['2024-09-15'],
+    deleteDate: ['2024-07-08']
+  },
+  {
+    key: 36,
+    name: 'CodeFile17',
+    type: 'ts',
+    size: '256 KB',
+    changeDate: ['2024-11-01'],
+    deleteDate: ['2024-09-15']
+  },
+  {
+    key: 37,
+    name: 'Document18',
+    type: 'doc',
+    size: '1024 KB',
+    changeDate: ['2025-01-01', '2025-02-15'],
+    deleteDate: ['2025-03-10', '2025-04-20']
+  },
+  {
+    key: 38,
+    name: 'Image18',
+    type: 'jpg',
+    size: '2048 KB',
+    changeDate: ['2025-03-10'],
+    deleteDate: ['2025-01-01', '2025-02-15']
+  },
+  {
+    key: 39,
+    name: 'Spreadsheet18',
+    type: 'xlsx',
+    size: '512 KB',
+    changeDate: ['2025-05-20'],
+    deleteDate: ['2025-03-10']
+  },
+  {
+    key: 40,
+    name: 'Video18',
+    type: 'mp4',
+    size: '4096 KB',
+    changeDate: ['2025-07-08'],
+    deleteDate: ['2025-05-20']
+  },
+  {
+    key: 41,
+    name: 'Presentation18',
+    type: 'ppt',
+    size: '3072 KB',
+    changeDate: ['2025-09-15'],
+    deleteDate: ['2025-07-08']
+  },
+  {
+    key: 42,
+    name: 'CodeFile18',
+    type: 'ts',
+    size: '256 KB',
+    changeDate: ['2025-11-01'],
+    deleteDate: ['2025-09-15']
+  }
+];
+
 
 const route = useRoute();
 const fileStore = useFileStoreWithOut()
 const searchValue = ref('')
 const visible = ref(false)
-const dataSource = ref<FileDataType[]>([])
+const showFlag = ref(false)
+const dataSource = ref<FileDataType[]>(fileData)
 const activeRouteType = ref<LocationQueryValue | LocationQueryValue[] | FileType>(fileStore.displayType)
 
 const rootMenuSubKeys: VKey[] = ['mine', 'recycle', 'share']
@@ -47,7 +228,6 @@ const fileDisplayType: RadioData[] = [
   { key: 'timeLine', label: '时间线' },
 ]
 const fileDisplayTypeChangeHandle = (value: FileDisPlayType) => {
-  console.log('fileListStore', fileStore.displayType, value);
   fileStore.changeState({
     key: 'displayType',
     value
@@ -67,11 +247,77 @@ watch(() => route.query.type, (n, o) => {
   activeRouteType.value = n
   dataSource.value = []
 })
+
+import { CheckboxData } from '@idux/components/checkbox'
+
+const columnsTypes = ref<ColumnType[]>(fileStore.columnsType)
+
+const columnsTypesData: CheckboxData[] = [
+  { key: 'name', label: '文件名', disabled: true },
+  { key: 'type', label: '类型' },
+  { key: 'size', label: '大小' },
+  { key: 'changeDate', label: '修改日期' },
+  { key: 'deleteDate', label: '删除日期' },
+]
+
+const dragControllerDiv = () => {
+  const resize: any = document.getElementsByClassName('resize')
+  const boxDom = document.getElementById('container')
+  const leftDom: any = document.getElementsByClassName('left-content')
+  const rightDom: any = document.getElementsByClassName('right-content')
+
+  if (!boxDom) return
+  resize[0].onmousedown = function (e: any) {
+    // 拖拽区 开始的距离  403
+    const startX = e.clientX
+    // 左边大小 放入 resize
+    resize[0].left = resize[0].offsetLeft
+    document.onmousemove = function (ee) {
+      // 拖拽区 结束的距离
+      const endX = ee.clientX
+      // 移动的距离 （endx-startx）=移动的距离。resize[0].left+移动的距离=左边区域最后的宽度
+      let leftWidth = resize[0].left + (endX - startX)
+      // 右边最大宽度
+      const maxWidth = boxDom.clientWidth - resize[0].offsetWidth
+      /* 设置 左边 最小值 */
+      if (leftWidth < 224)
+        leftWidth = 224
+      if (leftWidth > maxWidth - 224)
+        leftWidth = maxWidth - 224
+      // 设置拖拽条 距离左侧区域的宽度
+      resize[0].style.left = leftWidth
+      // 设置 左边宽度
+      leftDom[0].style.width = `${leftWidth}px`
+      // 设置右边宽度
+      rightDom[0].style.width = `${boxDom.clientWidth - leftWidth - 10}px`
+    }
+    document.onmouseup = function () {
+      document.onmousemove = null
+      document.onmouseup = null
+    }
+
+    return false
+  }
+}
+
+onMounted(() => {
+  dragControllerDiv()
+})
+
+const siderShowHandle = (flag: boolean) => {
+  showFlag.value = flag
+}
+const columnsTypeChangeHandle = (value: ColumnType[]) => {
+  fileStore.changeState({
+    key: 'columnsType',
+    value
+  })
+}
 </script>
 
 <template>
-  <IxLayout class="m-0 p-0">
-    <IxLayoutSider class="flex flex-col justify-between bg-white m-0 p-0">
+  <IxLayout id="container" class="m-0 p-0 flex">
+    <IxLayoutSider v-if="showFlag" class="left-content flex flex-col justify-between bg-white m-0 p-0">
       <IxMenu :expandedKeys="expandedKeys" @update:expandedKeys="onExpandedChange" mode="inline" :dataSource="menuData">
         <template #itemLabel="item">
           <router-link :to="item.key">
@@ -87,7 +333,13 @@ watch(() => route.query.type, (n, o) => {
         </div>
       </div>
     </IxLayoutSider>
-    <IxLayoutContent class="p-0 m-0">
+    <div class="resize">
+      <IxIcon style="background-color: #EEEEEE;" v-if="showFlag" @click="siderShowHandle(false)" name="collapse"
+        class="py-8 text-black rounded-md rounded-tl-none rounded-bl-none" />
+      <IxIcon style="background-color: #EEEEEE;" v-else @click="siderShowHandle(true)" name="expand"
+        class="py-8 text-black rounded-md rounded-tl-none rounded-bl-none" />
+    </div>
+    <IxLayoutContent class="right-content p-0 m-0 flex-1">
       <IxRow class="bg-white m-3 p-2">
         <IxCol class="flex justify-start" :span="12">
           <IxSpace align="center" class="overflow-x-auto">
@@ -108,15 +360,21 @@ watch(() => route.query.type, (n, o) => {
                 <IxIcon name="search" />
               </template>
             </IxInput>
-            <IxPopover :visible="visible" trigger="click" placement="bottomEnd">
+            <!-- <IxPopover :visible="visible" trigger="click" placement="bottomEnd"> -->
+            <IxPopover :visible="visible" trigger="manual" placement="bottomEnd">
               <template #content>
-                <IxSpace vertical align="center">
+                <IxSpace vertical align="start">
                   <div class="flex justify-around items-center">
                     <p class="pr-3 pb-1">展示方式:</p>
                     <IxRadioGroup v-model:value="fileStore.displayType"
                       :dataSource="fileStore.routeType === 'image' ? fileDisplayType : fileDisplayType.slice(0, 2)"
                       @change="fileDisplayTypeChangeHandle">
                     </IxRadioGroup>
+                  </div>
+                  <div v-if="fileStore.displayType === 'list'" class="flex justify-around items-center">
+                    <p class="pr-3 pb-1">展示列:</p>
+                    <IxCheckboxGroup @Change="columnsTypeChangeHandle" v-model:value="columnsTypes"
+                      :dataSource="columnsTypesData"></IxCheckboxGroup>
                   </div>
                 </IxSpace>
               </template>
@@ -128,7 +386,8 @@ watch(() => route.query.type, (n, o) => {
         </IxCol>
       </IxRow>
       <FileTable v-if="fileStore.displayType === 'table'" :type="activeRouteType" :dataSource="dataSource" />
-      <FileList v-else-if="fileStore.displayType === 'list'" :type="activeRouteType" :dataSource="dataSource" />
+      <FileList :key="fileStore.columnsType.join(',')" v-else-if="fileStore.displayType === 'list'"
+        :type="activeRouteType" :dataSource="dataSource" />
       <TimeLine v-else-if="fileStore.displayType === 'timeLine'" :type="activeRouteType" :dataSource="dataSource" />
     </IxLayoutContent>
   </IxLayout>
@@ -141,5 +400,14 @@ watch(() => route.query.type, (n, o) => {
 
 :deep(.ix-pro-layout-content) {
   padding: 0;
+}
+
+.resize {
+  width: 10px;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
 }
 </style>

@@ -14,8 +14,13 @@ export type FileDataType = {
   key: number
   name: string
   type: string
-  dateChanged: string[]
+  size: string
+  changeDate: string[]
+  deleteDate: string[]
 }
+
+
+type ColumnType = keyof FileDataType
 
 export type UserStoreType = {
   isLogin: boolean
@@ -27,6 +32,7 @@ export type UserStoreType = {
 export type FileStoreType = {
   displayType: FileDisPlayType,
   routeType: FileType
+  columnsType: ColumnType[]
 }
 
 type CommonStoreType = {
