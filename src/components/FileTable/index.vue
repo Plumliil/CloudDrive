@@ -35,12 +35,12 @@ for (let i = 0; i < 30; i++) {
 </script>
 
 <template>
-  <IxSpace vertical block class="p-3 overflow-y-scroll overflow-x-hidden"
+  <IxSpace vertical block class="bg-white p-3 overflow-y-scroll overflow-x-hidden"
     style="width: 98.6%;margin: 0 0.7%;height: calc(100% - 72px);">
     <IxList :grid="{ gutter: [20, 10], column: 3, xs: 1, sm: 4, md: 6, lg: 8, xl: 8 }">
       <IxList-item class="flex justify-center items-center" v-for="item in listData" :key="item.title">
         <div class="w-32 h-32 text-center">
-          <IxImage :src="getFileIcon(`${item.title}.${item.type}`)" :preview="false" />
+          <IxImage class="w-16 h-16" :src="getFileIcon(`${item.title}.${item.type}`)" :preview="false" />
           <p>{{ `${item.title}.${item.type}` }}</p>
         </div>
       </IxList-item>
