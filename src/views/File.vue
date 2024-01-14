@@ -1,13 +1,17 @@
 <script setup lang='ts'>
 import { RadioData } from '@idux/components/radio'
-import { type MenuData } from '@idux/components/menu'
+import { MenuClickOptions, type MenuData } from '@idux/components/menu'
 import { VKey } from '@idux/cdk/utils'
+import { CheckboxData } from '@idux/components/checkbox'
+import { useMessage } from '@idux/components/message'
 import FileTable from '@/components/FileTable/index.vue'
 import FileList from '@/components/FileList/index.vue'
 import TimeLine from '@/components/TimeLine/index.vue'
 import { useFileStoreWithOut } from '@/store';
 import { ColumnType, FileDataType, FileDisPlayType, FileType } from '@/type'
 import { LocationQueryValue } from 'vue-router'
+import { folderList } from '@/mock'
+import { useModal } from '@idux/components/modal'
 
 const fileData: FileDataType[] = [
   {
@@ -187,18 +191,41 @@ const fileData: FileDataType[] = [
     deleteDate: ['2025-09-15']
   }
 ];
+import { Validators, useFormGroup } from '@idux/cdk/forms'
+import { TreeNode } from '@idux/components/tree/src/types'
+
+const { required } = Validators
+
+const folderCreateForm = useFormGroup({
+  folderName: ['', required],
+})
+const folderShareForm = useFormGroup({
+  validityData: ['', required],
+  shouldCode: ['n', required],
+  password: ['', required],
+})
 
 
 const route = useRoute();
+const listRef = ref();
+const tableRef = ref();
 const fileStore = useFileStoreWithOut()
-const searchValue = ref('')
-const visible = ref(false)
-const showFlag = ref(false)
+const searchValue = ref('') // Search keyword
+const visible = ref(false) // Display column visible
+const createFileVisible = ref<boolean>(false)
+const uploadFileVisible = ref<boolean>(false)
+const shareFileVisible = ref<boolean>(false)
 const dataSource = ref<FileDataType[]>(fileData)
 const activeRouteType = ref<LocationQueryValue | LocationQueryValue[] | FileType>(fileStore.displayType)
-
 const rootMenuSubKeys: VKey[] = ['mine', 'recycle', 'share']
 const expandedKeys = ref<VKey[]>(['mine'])
+const message = useMessage()
+const selectKeys = ref<any[]>([])
+const selectRows = ref<any[]>([])
+const selectBtnFlag = computed(() => selectKeys.value.length > 0)
+const { confirm } = useModal()
+
+
 const onExpandedChange = (keys: VKey[]) => {
   const lastExpandedKey = keys.find(key => !expandedKeys.value.includes(key))
   if (rootMenuSubKeys.indexOf(lastExpandedKey!) === -1) {
@@ -247,9 +274,6 @@ watch(() => route.query.type, (n, o) => {
   activeRouteType.value = n
   dataSource.value = []
 })
-
-import { CheckboxData } from '@idux/components/checkbox'
-
 const columnsTypes = ref<ColumnType[]>(fileStore.columnsType)
 
 const columnsTypesData: CheckboxData[] = [
@@ -305,7 +329,10 @@ onMounted(() => {
 })
 
 const siderShowHandle = (flag: boolean) => {
-  showFlag.value = flag
+  fileStore.changeState({
+    key: 'siderState',
+    value: flag ? 'show' : 'hidden'
+  })
 }
 const columnsTypeChangeHandle = (value: ColumnType[]) => {
   fileStore.changeState({
@@ -313,11 +340,109 @@ const columnsTypeChangeHandle = (value: ColumnType[]) => {
     value
   })
 }
-</script>
 
+// ----------- 文件操作 ---------------  //
+
+const createFolderVisible = ref(false)
+const moveFileVisible = ref(false)
+const curSelectFolder = ref<VKey | undefined>()
+
+// 创建文件夹
+const createFolderVisibleChange = (flag: boolean) => {
+  createFolderVisible.value = flag
+}
+const okcreateFolderHandle = () => {
+  if (!folderCreateForm.valid.value) {
+    return message.info('请填写文件夹名称!')
+  } else {
+    createFolderVisibleChange(false)
+    setTimeout(() => {
+      folderCreateForm.reset()
+    }, 500);
+  }
+}
+// 移动文件
+const moveFileVisibleChange = (flag: boolean) => {
+  moveFileVisible.value = flag
+}
+const okMoveFileHandle = () => {
+  moveFileVisibleChange(false)
+  console.log('curSelectFolder', curSelectFolder.value);
+
+  curSelectFolder.value = undefined
+}
+const selectTargetFolder = (evt: Event, node: TreeNode) => {
+  console.log('evt, node', { evt, node });
+  curSelectFolder.value = node.key
+}
+
+
+// 删除
+
+const deleteFileHandle = () => {
+  confirm({
+    title: '警告', content: '是否删除选中文件!', onOk: () => {
+      console.log('selectData', {
+        sk: selectKeys.value,
+        sr: selectRows.value
+      });
+
+    }
+  })
+}
+
+
+// 分享
+const shareFileVisibleChange = (flag: boolean) => {
+  shareFileVisible.value = flag
+}
+const okShareFileHandle = () => {
+  console.log('share handle');
+  console.log('folderShareForm', folderShareForm.valueRef, selectKeys.value);
+
+  shareFileVisibleChange(false)
+}
+
+const setSelectData = (sKeys: any, sRows: any) => {
+  selectKeys.value = sKeys
+  selectRows.value = sRows
+}
+
+
+// 新建
+
+const createButtons: MenuData[] = [
+  { type: 'item', key: 'folder', label: '文件夹' },
+  {
+    type: 'sub', key: 'online', label: '在线文档',
+    children: [
+      { key: 'excel', label: 'Excel' },
+      { key: 'word', label: 'Word' },
+      { key: 'ppt', label: 'PowerPoint ' },
+    ],
+  }
+]
+const createHandle = (options: MenuClickOptions) => {
+  if (options.key === 'folder') {
+    createFolderVisibleChange(true)
+  }
+}
+
+// 上传
+const uploadButtons: MenuData[] = [
+  { type: 'item', key: 'file', label: '文件' },
+  { type: 'item', key: 'folder', label: '文件夹' },
+  { type: 'item', key: 'drag', label: '拖拽上传' },
+]
+const uploadHandle = (options: MenuClickOptions) => {
+  console.log('options', options);
+}
+
+</script>
 <template>
-  <IxLayout id="container" class="m-0 p-0 flex">
-    <IxLayoutSider v-if="showFlag" class="left-content flex flex-col justify-between bg-white m-0 p-0">
+  <IxLayout id="container" class="m-0 p-0">
+    <IxLayoutSider v-if="fileStore.siderState === 'show'"
+      class="left-content flex flex-col justify-between bg-white m-0 p-0">
       <IxMenu :expandedKeys="expandedKeys" @update:expandedKeys="onExpandedChange" mode="inline" :dataSource="menuData">
         <template #itemLabel="item">
           <router-link :to="item.key">
@@ -334,26 +459,55 @@ const columnsTypeChangeHandle = (value: ColumnType[]) => {
       </div>
     </IxLayoutSider>
     <div class="resize">
-      <IxIcon style="background-color: #EEEEEE;" v-if="showFlag" @click="siderShowHandle(false)" name="collapse"
-        class="py-8 text-black rounded-md rounded-tl-none rounded-bl-none" />
+      <IxIcon style="background-color: #EEEEEE;" v-if="fileStore.siderState === 'show'" @click="siderShowHandle(false)"
+        name="collapse" class="py-8 text-black rounded-md rounded-tl-none rounded-bl-none" />
       <IxIcon style="background-color: #EEEEEE;" v-else @click="siderShowHandle(true)" name="expand"
         class="py-8 text-black rounded-md rounded-tl-none rounded-bl-none" />
     </div>
     <IxLayoutContent class="right-content p-0 m-0 flex-1">
-      <IxRow class="bg-white m-3 p-2">
+      <IxRow class="mx-3 mt-3 p-2 flex justify-center items-center">
         <IxCol class="flex justify-start" :span="12">
-          <IxSpace align="center" class="overflow-x-auto">
-            <IxButton mode="primary" class="text-blue-500 active:text-white hover:text-white">上传</IxButton>
-            <IxButton mode="primary" class="text-blue-500 active:text-white hover:text-white">新建文件夹</IxButton>
-            <!-- <IxButton mode="primary" class="text-blue-500 active:text-white hover:text-white">新建在线文档</IxButton>
-            <IxButton mode="primary" class="text-blue-500 active:text-white hover:text-white">批量删除</IxButton>
-            <IxButton mode="primary" class="text-blue-500 active:text-white hover:text-white">批量移动</IxButton>
-            <IxButton mode="primary" class="text-blue-500 active:text-white hover:text-white">下载</IxButton>
-            <IxButton mode="primary" class="text-blue-500 active:text-white hover:text-white">批量下载</IxButton>
-            <IxButton mode="primary" class="text-blue-500 active:text-white hover:text-white">分享</IxButton> -->
-          </IxSpace>
+          <IxBreadcrumb>
+            <IxBreadcrumbItem>
+              巴黎
+            </IxBreadcrumbItem>
+            <IxBreadcrumbItem>
+              北京
+            </IxBreadcrumbItem>
+            <IxBreadcrumbItem>
+              热情的岛屿
+            </IxBreadcrumbItem>
+            <IxBreadcrumbItem>
+              土耳其
+            </IxBreadcrumbItem>
+          </IxBreadcrumb>
         </IxCol>
-        <IxCol class="flex justify-end pr-4" :span="12">
+        <IxCol style="display: flex;;justify-content: flex-end;" :span="12">
+          <IxSpace align="center" class="overflow-x-auto pr-4">
+            <IxDropdown v-model:visible="uploadFileVisible" trigger="click">
+              <IxButton mode="primary">
+                上传
+                <IxIcon name="down" :rotate="uploadFileVisible ? -180 : 0" size="16px" style="margin-left: 4px">
+                </IxIcon>
+              </IxButton>
+              <template #overlay>
+                <IxMenu :dataSource="uploadButtons" @click="uploadHandle" :selectable="false"></IxMenu>
+              </template>
+            </IxDropdown>
+            <IxButton v-if="selectBtnFlag" mode="primary" @click="shareFileVisibleChange(true)">分享</IxButton>
+            <IxButton v-if="selectBtnFlag" mode="primary" @click="deleteFileHandle">删除</IxButton>
+            <IxDropdown v-model:visible="createFileVisible" trigger="click">
+              <IxButton mode="primary">
+                新建
+                <IxIcon name="down" :rotate="createFileVisible ? -180 : 0" size="16px" style="margin-left: 4px">
+                </IxIcon>
+              </IxButton>
+              <template #overlay>
+                <IxMenu :dataSource="createButtons" @click="createHandle" :selectable="false"></IxMenu>
+              </template>
+            </IxDropdown>
+            <IxButton v-if="selectBtnFlag" mode="primary" @click="moveFileVisibleChange(true)">移动文件</IxButton>
+          </IxSpace>
           <IxSpace align="center">
             <IxInput v-model:value="searchValue">
               <template #addonBefore class="bg-none">
@@ -376,6 +530,10 @@ const columnsTypeChangeHandle = (value: ColumnType[]) => {
                     <IxCheckboxGroup @Change="columnsTypeChangeHandle" v-model:value="columnsTypes"
                       :dataSource="columnsTypesData"></IxCheckboxGroup>
                   </div>
+                  <!-- <div v-if="fileStore.displayType !== 'list'" class="flex justify-around items-center">
+                    <p class="pr-3 pb-1">图标大小:</p>
+                    <IxSlider class="w-32" v-model:value="iconSize" :disabled="false"></IxSlider>
+                  </div> -->
                 </IxSpace>
               </template>
               <IxButton @Click="visible = !visible" class="border-none">
@@ -385,10 +543,51 @@ const columnsTypeChangeHandle = (value: ColumnType[]) => {
           </IxSpace>
         </IxCol>
       </IxRow>
-      <FileTable v-if="fileStore.displayType === 'table'" :type="activeRouteType" :dataSource="dataSource" />
-      <FileList :key="fileStore.columnsType.join(',')" v-else-if="fileStore.displayType === 'list'"
+      <FileTable ref="tableRef" :setSelectData="setSelectData" v-if="fileStore.displayType === 'table'"
         :type="activeRouteType" :dataSource="dataSource" />
+      <FileList ref="listRef" :setSelectData="setSelectData" :move-handle="() => moveFileVisibleChange(true)"
+        :delete-handle="() => deleteFileHandle()" :share-handle="() => shareFileVisibleChange(true)"
+        :key="fileStore.columnsType.join(',')" v-else-if="fileStore.displayType === 'list'" :type="activeRouteType"
+        :dataSource="dataSource" />
       <TimeLine v-else-if="fileStore.displayType === 'timeLine'" :type="activeRouteType" :dataSource="dataSource" />
+      <IxModal :destroyOnHide="true" :visible="createFolderVisible" @ok="okcreateFolderHandle" header="新建文件夹"
+        @cancel="createFolderVisibleChange(false)" @close="createFolderVisibleChange(false)" :centered="false"
+        :width="400">
+        <IxForm :control="folderCreateForm">
+          <IxFormItem label="文件夹名" required>
+            <IxInput control="folderName"></IxInput>
+          </IxFormItem>
+        </IxForm>
+      </IxModal>
+      <IxModal :destroyOnHide="true" :visible="shareFileVisible" @ok="okShareFileHandle" header="文件分享"
+        @cancel="shareFileVisibleChange(false)" @close="shareFileVisibleChange(false)" :centered="false" :width="400">
+        <IxForm :control="folderShareForm">
+          <IxFormItem label="链接有效期至" required>
+            <IxDatePicker control="validityData" type="datetime" clearable></IxDatePicker>
+          </IxFormItem>
+          <IxFormItem label="是否需要提取码">
+            <IxRadioGroup control="shouldCode">
+              <IxRadio value="y">是</IxRadio>
+              <IxRadio value="n">否</IxRadio>
+            </IxRadioGroup>
+          </IxFormItem>
+          <IxFormItem v-if="folderShareForm.valueRef.value.shouldCode === 'y'" label="提取码" required>
+            <IxInput control="password"></IxInput>
+          </IxFormItem>
+        </IxForm>
+      </IxModal>
+      <IxModal :destroyOnHide="true" :visible="moveFileVisible" @ok="okMoveFileHandle" header="移动文件"
+        @cancel="moveFileVisibleChange(false)" @close="moveFileVisibleChange(false)" :centered="false" :width="600">
+        <div style="height: 400px; overflow-y: scroll;">
+          <IxProTree :style="{ height: '400px' }" :height="321" :dataSource="folderList" @nodeClick="selectTargetFolder">
+            <template #suffix>
+              <IxSpace>
+                <IxIcon name="plus" @click="createFolderVisibleChange(true)" />
+              </IxSpace>
+            </template>
+          </IxProTree>
+        </div>
+      </IxModal>
     </IxLayoutContent>
   </IxLayout>
 </template>
@@ -400,6 +599,15 @@ const columnsTypeChangeHandle = (value: ColumnType[]) => {
 
 :deep(.ix-pro-layout-content) {
   padding: 0;
+}
+
+:deep(.ix-tree-node) {
+  margin: 3px 0;
+}
+
+#container {
+  display: flex;
+
 }
 
 .resize {

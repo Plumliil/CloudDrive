@@ -3,19 +3,20 @@
 import { getFileIcon } from '@/utils/file.ts'
 import { useFileStoreWithOut } from '@/store';
 import { FileDataType, FileDisplayPropsType } from '@/type';
+import { menusEvent } from 'vue3-menus';
 import { TableColumn, TableColumnSelectable, TablePagination } from '@idux/components/table'
 const fileStore = useFileStoreWithOut()
+const curRightSelect = ref<any>()
 const props = withDefaults(defineProps<FileDisplayPropsType>(), {})
-
 const selectableColumn = reactive<TableColumnSelectable<FileDataType>>({
   type: 'selectable',
   align: 'center',
   multiple: true,
   showIndex: false,
-  onChange: (selectedKeys, selectedRows) => console.log(selectedKeys, selectedRows),
+  onChange: (selectedKeys, selectedRows) => {
+    props.setSelectData && props.setSelectData(selectedKeys, selectedRows)
+  },
 })
-
-
 const setPagination = (pageIndex: number, pageSize: number) => {
   // 如果修改了 pageSize, 应该把 pageIndex 重置为 1
   if (pagination.pageSize !== pageSize) {
@@ -44,30 +45,83 @@ const columns = ref<TableColumn<FileDataType>[]>([
     title: '类型',
     dataKey: 'type',
     width: 200,
+    customCell: 'type',
   }] : []),
   ...(fileStore.columnsType.includes('size') ? [{
     title: '大小',
     dataKey: 'size',
     width: 200,
+    customCell: 'size',
   }] : []),
   ...(fileStore.columnsType.includes('changeDate') ? [{
     title: '修改日期',
     dataKey: 'changeDate',
     width: 200,
-    customCell: (value: any) => value.value.join(',')
+    customCell: 'changeDate',
   }] : []),
   ...(fileStore.columnsType.includes('deleteDate') ? [{
     title: '删除日期',
     dataKey: 'deleteDate',
     width: 200,
-    customCell: (value: any) => value.value.join(',')
+    customCell: 'changeDate',
   }] : []),
 ])
-const selectedRowKeys = ref([1])
+const selectedRowKeys = ref([])
 onMounted(() => {
   setPagination(1, 20)
 })
 
+const menus = shallowRef({
+  menus: [
+    {
+      label: "查看",
+      tip: '    ',
+      click: () => {
+        console.log('查看');
+      }
+    },
+    {
+      label: "删除",
+      tip: '    ',
+      click: () => {
+        props.deleteHandle && props.deleteHandle()
+      }
+    },
+    {
+      label: "移动",
+      tip: '    ',
+      click: () => {
+        props.moveHandle && props.moveHandle()
+      }
+    },
+    {
+      label: "重命名",
+      tip: '    ',
+      click: () => {
+        props.renameHandle && props.renameHandle()
+      }
+    },
+    {
+      label: "分享",
+      tip: '    ',
+      click: () => {
+        props.shareHandle && props.shareHandle()
+      }
+    },
+    {
+      label: "下载",
+      tip: '    ',
+      click: () => {
+        props.downHandle && props.downHandle()
+      }
+    },
+  ]
+});
+function rightClick(event: MouseEvent, record: any) {
+  menusEvent(event, menus.value, null);
+  curRightSelect.value = record
+  event.preventDefault();
+}
 </script>
 
 <template>
@@ -75,16 +129,22 @@ onMounted(() => {
     <IxTable v-model:selectedRowKeys="selectedRowKeys" :pagination="pagination" :columns="columns"
       :dataSource="props.dataSource">
       <template #name="{ record }">
-        <div class="flex justify-start items-center">
+        <div class="flex justify-start items-center" @click.stop @contextmenu="(e) => rightClick(e, record)">
           <IxImage :src="getFileIcon(`${record.name}.${record.type}`)" :preview="false" />
           <IxButton mode="link">{{ record.name }}</IxButton>
         </div>
       </template>
-      <template #action="{ record }">
-        <IxButtonGroup :gap="8" mode="link" separator="|">
-          <IxButton>Invite {{ record.name }}</IxButton>
-          <IxButton>Delete</IxButton>
-        </IxButtonGroup>
+      <template #type="{ record }">
+        <div class="p-2" @click.stop @contextmenu="(e) => rightClick(e, record)">{{ record.type }}</div>
+      </template>
+      <template #size="{ record }">
+        <div class="p-2" @click.stop @contextmenu="(e) => rightClick(e, record)">{{ record.type }}</div>
+      </template>
+      <template #changeDate="{ record }">
+        <div class="p-2" @click.stop @contextmenu="(e) => rightClick(e, record)">{{ record.changeDate.join(',') }}</div>
+      </template>
+      <template #deleteDate="{ record }">
+        <div class="p-2" @click.stop @contextmenu="(e) => rightClick(e, record)">{{ record.deleteDate.join(',') }}</div>
       </template>
     </IxTable>
   </IxSpace>
@@ -95,23 +155,25 @@ onMounted(() => {
   height: calc(100vh - 193px);
   overflow: auto;
 }
+
 :deep(.ix-image-inner) {
   width: 20px;
   min-width: 10px;
   min-height: 20px;
   height: 20px
 }
+
 :deep(.ix-image) {
   width: 36px;
   min-width: 36px;
   min-height: 20px;
   height: 20px
 }
+
 :deep(.ix-pagination) {
   position: absolute;
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
 }
-
 </style>
