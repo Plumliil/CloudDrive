@@ -30,10 +30,11 @@ const loadIconDynamically = (iconName: string) => {
 const customConfig = { icon: { loadIconDynamically } }
 // 如果是 seer 主题
 // customConfig = merge(seerConfig, { icon: { loadIconDynamically } })
-const globalConfig = createGlobalConfig(customConfig)
+// const globalConfig = createGlobalConfig(customConfig)
 
 const install = (app: App): void => {
-  app.use(IduxCdk).use(IduxComponents).use(IduxPro).use(globalConfig);
+  app.use(IduxCdk).use(IduxComponents).use(IduxPro);
+  // app.use(IduxCdk).use(IduxComponents).use(IduxPro).use(globalConfig);
 };
 
 export default { install };

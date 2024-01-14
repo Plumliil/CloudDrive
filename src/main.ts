@@ -3,9 +3,9 @@ import { createApp } from 'vue'
 import router from '@/router'
 // import store from '@/store'
 import App from './App.vue'
-import Idux from "./idux";
 import './tailwind.css'
-import { Button ,Upload} from 'ant-design-vue';
+import Idux from "./idux";
+import { Button, Upload, Modal } from 'ant-design-vue';
 import setupStore from '@/store'
 /**
  * 1. 你可以用任意请求库来替换掉 fetch.
@@ -27,7 +27,6 @@ const app = createApp(App);
 setupStore(app)
 app.use(Button);
 app.use(Upload);
-
 // app.use(store);
 app.use(Idux);
 app.use(globalConfig);
