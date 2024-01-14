@@ -10,6 +10,7 @@ const useFileStore = defineStore({
       displayType: 'list',
       columnsType:  ['name', 'type', 'size', 'changeDate', 'deleteDate'],
       routeType: 'other',
+      siderState:'show'
     }
     return state
   },

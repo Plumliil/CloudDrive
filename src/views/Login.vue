@@ -64,7 +64,7 @@ const passwordVisible = ref(false)
 </script>
 
 <template>
-  <div id="loginBackground" class="h-full w-full flex items-center">
+  <div class="login-container">
     <IxForm class="rounded-md py-16 px-4 w-96 mx-auto" :control="formGroup">
       <IxFormItem message="Please input your username!">
         <IxInput control="username" prefix="user"></IxInput>
@@ -95,3 +95,11 @@ const passwordVisible = ref(false)
     </IxForm>
   </div>
 </template>
+<style scoped>
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 48px);
+}
+</style>

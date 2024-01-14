@@ -3,10 +3,16 @@ import { LocationQueryValue } from 'vue-router';
 export type FileType = 'all' | 'image' | 'docs' | 'video' | 'audio' | 'other' | 'recycle' | 'share'
 export type FileDisPlayType = 'list' | 'table' | 'timeLine'
 export type BaseRouteType = '/' | '/file' | '/doc'
-
+export type ShowType = 'show' | 'hidden'
 export type FileDisplayPropsType = {
   type: LocationQueryValue | LocationQueryValue[] | FileType
   dataSource: FileDataType[]
+  setSelectData?: (sKeys: any, sRows: any) => void
+  shareHandle?: () => void
+  moveHandle?: () => void
+  deleteHandle?: () => void
+  renameHandle?: () => void
+  downHandle?: () => void
 }
 
 
@@ -33,8 +39,10 @@ export type FileStoreType = {
   displayType: FileDisPlayType,
   routeType: FileType
   columnsType: ColumnType[]
+  siderState: ShowType
+
 }
 
 type CommonStoreType = {
-  curRoute: BaseRouteType
+  curRoute: BaseRouteType | VKey,
 }

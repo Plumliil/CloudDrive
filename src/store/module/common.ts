@@ -8,7 +8,7 @@ const useCommonStore = defineStore({
   persist: true,
   state: () => {
     const state: CommonStoreType = {
-      curRoute: '/'
+      curRoute: '/',
     }
     return state
   },

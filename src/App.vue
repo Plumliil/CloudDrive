@@ -23,7 +23,6 @@ const menuData: MenuData[] = [
   { type: 'item', key: '/doc', icon: 'file-text', label: '文档' },
 ]
 const menuHandluer = (options: MenuClickOptions) => {
-  console.log('options', options);
   commonStore.changeState({
     key: 'curRoute',
     value: options.key
@@ -50,28 +49,36 @@ const logout = () => {
   //   this.$router.push({ name: 'Home' })
   // })
 }
+onMounted(()=>{
+  commonStore.changeState({
+    key: 'curRoute',
+    value: history.state.current
+  })
+})
 </script>
 
 <template>
   <div class="h-screen w-screen">
-    <IxMessageProvider>
-      <IxProLayout clas="m-0 p-0 bg-blue-500" :onMenuClick="menuHandluer" :activeKey="commonStore.curRoute" :logo="logo"
-        :menus="userStore.isLogin ? menuData : []" :type="showLayoutFlag ? 'both' : 'header'" theme="light">
-        <template #itemLabel="item">
-          <router-link :to="item.key">{{ item.label }}</router-link>
-        </template>
-        <template #headerExtra>
-          <IxButtonGroup v-if="!userStore.isLogin" align="center" block justify="space-between" :gap="8" mode="text">
-            <IxButton><router-link to="register">注册</router-link></IxButton>
-            <IxButton><router-link to="login">登录</router-link></IxButton>
-          </IxButtonGroup>
-          <IxButtonGroup v-else align="center" block justify="space-between" :gap="8" mode="text">
-            <IxButton>{{ userStore.userInfo.name }}</IxButton>
-            <IxButton @click="logout">退出</IxButton>
-          </IxButtonGroup>
-        </template>
-        <router-view class="m-0 p-0"></router-view>
-      </IxProLayout>
+    <IxMessageProvider> 
+      <IxModalProvider>
+        <IxProLayout clas="m-0 p-0 bg-blue-500" :onMenuClick="menuHandluer" :activeKey="commonStore.curRoute" :logo="logo"
+          :menus="userStore.isLogin ? menuData : []" :type="showLayoutFlag ? 'both' : 'header'" theme="light">
+          <template #itemLabel="item">
+            <router-link :to="item.key">{{ item.label }}</router-link>
+          </template>
+          <template #headerExtra>
+            <IxButtonGroup v-if="!userStore.isLogin" align="center" block justify="space-between" :gap="8" mode="text">
+              <IxButton><router-link to="register">注册</router-link></IxButton>
+              <IxButton><router-link to="login">登录</router-link></IxButton>
+            </IxButtonGroup>
+            <IxButtonGroup v-else align="center" block justify="space-between" :gap="8" mode="text">
+              <IxButton>{{ userStore.userInfo.name }}</IxButton>
+              <IxButton @click="logout">退出</IxButton>
+            </IxButtonGroup>
+          </template>
+          <router-view class="m-0 p-0"></router-view>
+        </IxProLayout>
+      </IxModalProvider>
     </IxMessageProvider>
   </div>
 </template>

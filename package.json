@@ -12,6 +12,7 @@
     "@idux/cdk": "^1.12.4",
     "@idux/components": "^1.12.4",
     "@idux/pro": "^1.12.4",
+    "@right-menu/vue": "^0.0.4",
     "@types/spark-md5": "^3.0.4",
     "ant-design-vue": "^4.0.8",
     "canvas-nest.js": "^2.0.4",
@@ -27,7 +28,8 @@
     "vite-plugin-static-copy": "^1.0.0",
     "vue": "^3.3.11",
     "vue-codemirror": "^6.1.1",
-    "vue-router": "^4.2.5"
+    "vue-router": "^4.2.5",
+    "vue3-menus": "^1.1.2"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.5.2",
