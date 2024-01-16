@@ -199,6 +199,9 @@ const { required } = Validators
 const folderCreateForm = useFormGroup({
   folderName: ['', required],
 })
+const renameFileForm = useFormGroup({
+  newName: ['', required],
+})
 const folderShareForm = useFormGroup({
   validityData: ['', required],
   shouldCode: ['n', required],
@@ -344,6 +347,7 @@ const columnsTypeChangeHandle = (value: ColumnType[]) => {
 // ----------- 文件操作 ---------------  //
 
 const createFolderVisible = ref(false)
+const renameVisible = ref(false)
 const moveFileVisible = ref(false)
 const curSelectFolder = ref<VKey | undefined>()
 
@@ -358,6 +362,20 @@ const okcreateFolderHandle = () => {
     createFolderVisibleChange(false)
     setTimeout(() => {
       folderCreateForm.reset()
+    }, 500);
+  }
+}
+// 重命名
+const renameVisibleChange = (flag: boolean) => {
+  renameVisible.value = flag
+}
+const okrenameHandle = () => {
+  if (!folderCreateForm.valid.value) {
+    return message.info('请填写文件夹名称!')
+  } else {
+    renameVisibleChange(false)
+    setTimeout(() => {
+      renameFileForm.reset()
     }, 500);
   }
 }
@@ -546,7 +564,7 @@ const uploadHandle = (options: MenuClickOptions) => {
       <FileTable ref="tableRef" :setSelectData="setSelectData" v-if="fileStore.displayType === 'table'"
         :type="activeRouteType" :dataSource="dataSource" />
       <FileList ref="listRef" :setSelectData="setSelectData" :move-handle="() => moveFileVisibleChange(true)"
-        :delete-handle="() => deleteFileHandle()" :share-handle="() => shareFileVisibleChange(true)"
+        :delete-handle="() => deleteFileHandle()" :rename-handle="()=>renameVisibleChange(true)" :share-handle="() => shareFileVisibleChange(true)"
         :key="fileStore.columnsType.join(',')" v-else-if="fileStore.displayType === 'list'" :type="activeRouteType"
         :dataSource="dataSource" />
       <TimeLine v-else-if="fileStore.displayType === 'timeLine'" :type="activeRouteType" :dataSource="dataSource" />
@@ -556,6 +574,15 @@ const uploadHandle = (options: MenuClickOptions) => {
         <IxForm :control="folderCreateForm">
           <IxFormItem label="文件夹名" required>
             <IxInput control="folderName"></IxInput>
+          </IxFormItem>
+        </IxForm>
+      </IxModal>
+      <IxModal :destroyOnHide="true" :visible="renameVisible" @ok="okrenameHandle" header="文件重命名"
+        @cancel="renameVisibleChange(false)" @close="renameVisibleChange(false)" :centered="false"
+        :width="400">
+        <IxForm :control="renameFileForm">
+          <IxFormItem label="文件名" required>
+            <IxInput control="newName"></IxInput>
           </IxFormItem>
         </IxForm>
       </IxModal>

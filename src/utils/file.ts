@@ -30,7 +30,7 @@ const logoMap: LogoMapType = {
   music: music,
   audio: audio,
   video: video,
-  doc: doc,
+  doc: word,
   word: word,
   excel: excel,
   eml: eml,
