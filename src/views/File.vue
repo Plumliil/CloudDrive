@@ -15,6 +15,14 @@ import { useModal } from '@idux/components/modal'
 
 const fileData: FileDataType[] = [
   {
+    key: 0,
+    name: '文件夹',
+    type: 'folder',
+    size: '1024 KB',
+    deleteDate: ['2023-01-01', '2023-02-15'],
+    changeDate: ['2023-01-01', '2023-02-15']
+  },
+  {
     key: 1,
     name: 'Document1',
     type: 'doc',

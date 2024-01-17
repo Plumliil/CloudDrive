@@ -41,7 +41,8 @@ const logoMap: LogoMapType = {
   pdf: pdf,
   png: png,
   zip: zip,
-  broke: broke
+  broke: broke,
+  folder: file
 }
 
 
