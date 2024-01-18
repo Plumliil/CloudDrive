@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-// import requestHandler from '@/request';
+import requestHandler from '@/request';
 import { getFileIcon } from '@/utils/file.ts'
 import { useFileStoreWithOut } from '@/store';
-import { useDragUpload } from '@/hooks'
+import { useDragUploadv2 } from '@/hooks'
 import { FileDataType, FileDisplayPropsType } from '@/type';
 import { menusEvent } from 'vue3-menus';
 import { TableColumn, TableColumnSelectable, TablePagination } from '@idux/components/table'
@@ -136,39 +136,55 @@ const cancelHandle = () => {
   tableFileList.value = []
 }
 
-onMounted(() => {
-  const targetDom = document.getElementById('uploadTable');
-  const { fileList } = useDragUpload(targetDom)
-  watch(() => fileList.value, (n: File[]) => {
-    tableFileList.value = n
-    if (monseoverData.value?.type === 'folder') {
-      dragUploadVisible.value = true
-    }
-  }, {
-    deep: true
-  })
-})
-
 const showUploadTip = (record: FileDataType) => {
   curUploadKey.value = record.key
 }
 
-watch(() => monseoverData.value, (n: FileDataType | undefined) => {
-  curUploadKey.value = -1
+watch(() => monseoverData.value, async (n: FileDataType | undefined) => {
   if (!n) return
-  if (monseoverData.value?.type === 'folder' && JSON.stringify(tableFileList.value) !== '[]') {
-    dragUploadVisible.value = true
-  } else {
-    tableFileList.value = []
-  }
+  curUploadKey.value = n?.key
 })
+
+
+const dragoverHandle = (e: Event) => {
+  e.preventDefault();
+}
+const dropHandle = (e: DragEvent) => {
+  useDragUploadv2(e).then((fileList: File[] | undefined) => {
+    if (monseoverData.value?.type === 'folder' && fileList) {
+      console.log('dropHandle fileList', fileList);
+      tableFileList.value = fileList
+      dragUploadVisible.value = true
+    } else {
+      tableFileList.value = []
+    }
+  })
+  curUploadKey.value = -1
+  e.preventDefault();
+}
+
+const submitHandle = async () => {
+  const res: any = await requestHandler("/api/file", "get")
+  if (res.success) {
+    console.log('tableFileList.value 临时上传成功', tableFileList.value, res);
+    Promise.all(tableFileList.value.map(async (file: File) => {
+      const formData = new FormData();
+      formData.append('files', file);
+      return Promise.resolve(requestHandler("/api/file/upload", "post", formData))
+    })).then((res: any) => {
+      console.log('upload all', res);
+
+    })
+  }
+
+}
 
 </script>
 
 <template>
   <IxSpace vertical class="pt-4" style="width: 98.6%;background-color: #fff;margin: 0 0.7%;margin-top: -10px;">
-    <IxTable id="uploadTable" v-model:selectedRowKeys="selectedRowKeys" :pagination="pagination" :columns="columns"
-      :dataSource="props.dataSource">
+    <IxTable id="uploadTable" @dragover="dragoverHandle" @drop="dropHandle" v-model:selectedRowKeys="selectedRowKeys"
+      :pagination="pagination" :columns="columns" :dataSource="props.dataSource">
       <template #name="{ record }">
         <div @dragover="() => showUploadTip(record)" @drop="() => mouseoverHandle(record)"
           class="flex justify-start items-center" @click.stop @contextmenu="(e) => rightClick(e, record)">
@@ -195,9 +211,9 @@ watch(() => monseoverData.value, (n: FileDataType | undefined) => {
           record.deleteDate.join(',') }}</div>
       </template>
     </IxTable>
-    <IxModal v-model:visible="dragUploadVisible" header="文件上传" @close="cancelHandle" @cancel="cancelHandle">
-      {{ monseoverData?.name }}
-      {{ tableFileList }}
+    <IxModal v-model:visible="dragUploadVisible" header="文件上传" @ok="submitHandle" @close="cancelHandle"
+      @cancel="cancelHandle">
+      <a-upload v-model:file-list="tableFileList" />
     </IxModal>
   </IxSpace>
 </template>

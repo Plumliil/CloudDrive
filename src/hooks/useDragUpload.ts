@@ -1,4 +1,5 @@
 export default function (target: any) {
+  const fileListTemp = ref<File[]>([])
   const fileList = ref<File[]>([])
   target.addEventListener('mouseenter', (e: Event) => {
     e.preventDefault();
@@ -8,7 +9,7 @@ export default function (target: any) {
     e.stopPropagation();
   })
   target.addEventListener('drop', (e: DragEvent) => {
-    fileList.value = []
+    fileListTemp.value = []
     if (!e.dataTransfer) return
     let items = e.dataTransfer.items;
     for (let i = 0; i <= items.length - 1; i++) {
@@ -20,6 +21,8 @@ export default function (target: any) {
         getFileFromEntryRecursively(entry);
       }
     }
+    console.log('fileListTemp', fileListTemp);
+    fileList.value = fileListTemp.value
     console.log('drop');
     e.stopPropagation();
     e.preventDefault(); // 阻止默认行为，避免浏览器打开拖拽文件的默认行为
@@ -50,7 +53,7 @@ export default function (target: any) {
   }
   const addFileToList = ({ file, path }: { file: File; path: string }): void => {
     // 处理添加文件到列表的逻辑，可以根据需要修改
-    fileList.value.push(file)
+    fileListTemp.value.push(file)
   }
   const removeFile = () => {
     console.log('removeFile --------------------');
