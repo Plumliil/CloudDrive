@@ -7,7 +7,8 @@ const serviceAxios = axios.create({
   baseURL: '/',
   timeout: 5000,
   headers: {
-    'Access-Control-Allow-Origin': '*'
+    'Access-Control-Allow-Origin': '*',
+    Source: 1
   }
 })
 //请求拦截器
@@ -79,9 +80,11 @@ serviceAxios.interceptors.response.use(
 //     data: T
 // }
 interface customDataParams<T> { //根据后端返回的估固定🧷格式
-  data: T,
-  message: string,
-  status: boolean
+  Message: string,
+  IsSuccess: boolean,
+  Code: number,
+  TotalCount: number,
+  Data: T | null
 }
 
 // type returnResponseType<T> = axiosParams<customDataParams<T>>
@@ -116,21 +119,6 @@ const requestHandler = <T, P>(url: string, method: methodType, paramsData?: P, c
     return RequestAxiosInstance<T, P>(url, method, { data: paramsData }, config)
   }
 }
-
-/** 用法
-  type returnData={
-    name:string,
-    age:18
-}
-type responseParams={
-    username:string,
-    password:string
-}
-
-const resultData=requestHandler<returnData,responseParams>("/user/login", "post", { username: "admin",password:"123456" })
-
-**/
-
 
 export default requestHandler
 

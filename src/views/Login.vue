@@ -3,12 +3,9 @@ import { useUserStoreWithOut } from '@/store';
 import { useMessage } from '@idux/components/message'
 import { Validators, useFormGroup } from '@idux/cdk/forms'
 import requestHandler from '@/request';
+import userapi from '@/api/userapi'
 import router from '@/router';
-
-interface LoginFormType {
-  tel: string,
-  password: string
-}
+import type { LoginRqType, ResponseDataType } from '@/api/type'
 const userStore = useUserStoreWithOut()
 
 // const loginFormRules = {
@@ -27,21 +24,21 @@ const userStore = useUserStoreWithOut()
 
 const message = useMessage()
 
-// const { required, minLength, maxLength } = Validators
+const { required, minLength, maxLength } = Validators
 
 const formGroup = useFormGroup({
-  // username: ['', required],
-  // password: ['', [required, minLength(6), maxLength(18)]],
-  remember: [true],
+  Phone: ['', required],
+  PassWord: ['', [required, minLength(6), maxLength(18)]],
 })
 
 const login = async () => {
   console.log('formGroup', formGroup.valid.value, userStore);
-  // const res: any = await requestHandler("api/user/login", "post", formGroup.valid.value);
-  const res = {
-    success: true
-  }
-  if (res.success) {
+  const { IsSuccess, Data } = await requestHandler<ResponseDataType<any>, LoginRqType>(userapi.loginApi, "post", {
+    Phone: "string",
+    PassWord: "string"
+  });
+  console.log('res', Data);
+  if (IsSuccess) {
     message.success("登录成功")
     userStore.changeState({
       key: 'isLogin',
@@ -64,7 +61,8 @@ const passwordVisible = ref(false)
 </script>
 
 <template>
-  <div class="login-container">
+  <div class="flex flex-col justify-center items-center" style="height: calc(100vh - 400px);">
+    <h1 class="pb-10" style="font-size: 40px;font-weight: 800;">LOGIN</h1>
     <IxForm class="rounded-md py-16 px-4 w-96 mx-auto" :control="formGroup">
       <IxFormItem message="Please input your username!">
         <IxInput control="username" prefix="user"></IxInput>
@@ -77,29 +75,10 @@ const passwordVisible = ref(false)
           </template>
         </IxInput>
       </IxFormItem>
-      <IxFormItem messageTooltip>
-        <IxCheckbox control="remember">Remember me</IxCheckbox>
-      </IxFormItem>
       <IxFormItem style="margin: 8px 0" messageTooltip>
         <IxButton mode="primary" class="bg-none text-blue-500 hover:bg-blue-500 hover:text-white duration-500" block
           type="submit" @click="login">Login</IxButton>
       </IxFormItem>
-      <IxRow>
-        <IxCol span="12">
-          <a>Forgot password</a>
-        </IxCol>
-        <IxCol span="12" class="text-right">
-          <a>Register now!</a>
-        </IxCol>
-      </IxRow>
     </IxForm>
   </div>
 </template>
-<style scoped>
-.login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: calc(100vh - 48px);
-}
-</style>

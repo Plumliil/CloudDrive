@@ -42,6 +42,11 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
+      '/cdApi': {
+        target: 'https://v5698k5455.vicp.fun',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/cdApi/, ''),
+      },
     }
   },
 })
