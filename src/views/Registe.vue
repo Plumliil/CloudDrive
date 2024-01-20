@@ -1,15 +1,10 @@
 <script setup lang='ts'>
-import { useUserStoreWithOut } from '@/store';
 import { useMessage } from '@idux/components/message'
 import { Validators, useFormGroup } from '@idux/cdk/forms'
 import requestHandler from '@/request';
 import userapi from '@/api/userapi'
 import router from '@/router';
-import { jwtDecode } from "jwt-decode";
-import type { LoginRqType } from '@/api/type'
-import { LocalStorageCache } from '@/utils'
-import { JWT_Type } from '@/type';
-const userStore = useUserStoreWithOut()
+import type { RegistrationRqType } from '@/api/type'
 const message = useMessage()
 const { required, minLength, maxLength } = Validators
 
@@ -19,27 +14,25 @@ const phoneValidator = (value: string) => {
   }
   return { Phone: { message: 'Mobile phone number is not valid!' } }
 }
+const emailValidator = (value: string) => {
+  if (!value || /([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/.test(value)) {
+    return undefined
+  }
+  return { Email: { message: 'Email is not valid!' } }
+}
 
 const formGroup = useFormGroup({
+  UserName: ['', required],
   Phone: ['', [required, phoneValidator]],
+  Email: ['', [required, emailValidator]],
   PassWord: ['', [required, minLength(6), maxLength(18)]],
 })
 
-const login = async () => {
-  const { IsSuccess, Data, Message } = await requestHandler<string, LoginRqType>(userapi.login, "post", formGroup.getValue());
+const registe = async () => {
+  const { IsSuccess, Data, Message } = await requestHandler<any, RegistrationRqType>(userapi.registe, "post", formGroup.getValue());
   if (!IsSuccess && Data) return message.error(Message)
-  message.success("登录成功")
-  const decode: JWT_Type = jwtDecode(Data as string);
-  LocalStorageCache.setItem('Authorization', Data)
-  userStore.changeState({
-    key: 'isLogin',
-    value: true
-  })
-  userStore.changeState({
-    key: 'userInfo',
-    value: JSON.parse(decode.jwt)
-  })
-  router.replace('/')
+  message.success("注册成功")
+  router.replace('/login')
 }
 
 const passwordVisible = ref(false)
@@ -48,10 +41,16 @@ const passwordVisible = ref(false)
 
 <template>
   <div class="flex flex-col justify-center items-center" style="height: calc(100vh - 400px);">
-    <h1 class="pb-0" style="font-size: 40px;font-weight: 800;">LOGIN</h1>
+    <h1 class="pb-0" style="font-size: 40px;font-weight: 800;">registe</h1>
     <IxForm class="rounded-md py-16 px-4 w-96 mx-auto" :control="formGroup">
       <IxFormItem message="Please input your Phone!">
+        <IxInput control="UserName" prefix="user"></IxInput>
+      </IxFormItem>
+      <IxFormItem message="Please input your Phone!">
         <IxInput control="Phone" prefix="phone"></IxInput>
+      </IxFormItem>
+      <IxFormItem message="Please input your Phone!">
+        <IxInput control="Email" prefix="mail"></IxInput>
       </IxFormItem>
       <IxFormItem message="Please input your password, its length is 6-18!">
         <IxInput control="PassWord" prefix="lock" :type="passwordVisible ? 'text' : 'password'">
@@ -63,7 +62,7 @@ const passwordVisible = ref(false)
       </IxFormItem>
       <IxFormItem style="margin: 8px 0" messageTooltip>
         <IxButton mode="primary" class="bg-none text-blue-500 hover:bg-blue-500 hover:text-white duration-500" block
-          type="submit" @click="login">Login</IxButton>
+          type="submit" @click="registe">registe</IxButton>
       </IxFormItem>
     </IxForm>
   </div>

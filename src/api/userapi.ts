@@ -1,4 +1,5 @@
 import module from './module'
 export default {
-  loginApi: module.proxy + module.user + '/User/Login'
+  login: module.user + '/Login',
+  registe: module.user + '/RegistrationAccount'
 }

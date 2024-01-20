@@ -1,5 +1,10 @@
 import { LocationQueryValue } from 'vue-router';
 
+export type JWT_Type = {
+  exp: number,
+  jwt: string
+}
+
 export type FileType = 'all' | 'image' | 'docs' | 'video' | 'audio' | 'other' | 'recycle' | 'share'
 export type FileDisPlayType = 'list' | 'table' | 'timeLine'
 export type BaseRouteType = '/' | '/file' | '/doc'
@@ -31,7 +36,11 @@ type ColumnType = keyof FileDataType
 export type UserStoreType = {
   isLogin: boolean
   userInfo: {
-    name: string
+    UserId: string,
+    UserName: string,
+    Phone: string,
+    UserMail: string,
+    TokenCreateTime: string
   }
 }
 

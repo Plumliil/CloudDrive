@@ -1,21 +1,20 @@
 import { defineStore } from 'pinia'
 import { store } from '@/store'
 import { UserStoreType } from '@/type'
-// import { getToken } from '@/utils/http/cookie'
+import { LocalStorageCache } from '@/utils'
 
-async function checkUserLoginInfo() {
-  return {
-    success: true,
-    data: {}
-  }
-}
+
 const useUserStore = defineStore({
   id: 'user',
   persist: true,
   state: () => ({
     isLogin: false,
     userInfo: {
-      name: ''
+      UserId: '',
+      UserName: '',
+      Phone: '',
+      UserMail: '',
+      TokenCreateTime: ''
     }
   }),
   actions: {
@@ -26,28 +25,21 @@ const useUserStore = defineStore({
       }
       this[key] = value
     },
-    changeLoginState(state: boolean) {
-      this.isLogin = state
+    clearState() {
+      LocalStorageCache.clear()
+      this.isLogin = false
+      this.userInfo = {
+        UserId: '',
+        UserName: '',
+        Phone: '',
+        UserMail: '',
+        TokenCreateTime: '',
+      }
     },
-    changeUserInfo(data: any) {
-      this.userInfo = Object.assign({}, this.userInfo, data)
-    },
-    getUserInfo() {
-      console.log('getUserInfo');
-      // return checkUserLoginInfo().then((res) => {
-      //   if (res.success) {
-      //     this.isLogin = true
-      //     this.userInfo = res.data
-      //   } else {
-      //     this.isLogin = false
-      //   }
-      // })
-    }
   },
 })
 
 export default function useUserStoreWithOut() {
   return useUserStore(store)
 }
-
 

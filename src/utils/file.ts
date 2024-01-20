@@ -65,53 +65,53 @@ export function getFileIcon(fileName: string) {
 // 引入 jszip 库
 
 // 递归读取目录并压缩成 ZIP
-async function compressDirectory(directoryEntry) {
-  // 创建一个 JSZip 实例
-  const zip = new JSZip();
+// async function compressDirectory(directoryEntry) {
+//   // 创建一个 JSZip 实例
+//   const zip = new JSZip();
 
-  // 递归读取目录下的所有文件
-  await readDirectoryRecursive(directoryEntry, zip, '');
+//   // 递归读取目录下的所有文件
+//   await readDirectoryRecursive(directoryEntry, zip, '');
 
-  // 生成 ZIP Blob
-  const zipBlob = await zip.generateAsync({ type: 'blob' });
-  return zipBlob;
-}
+//   // 生成 ZIP Blob
+//   const zipBlob = await zip.generateAsync({ type: 'blob' });
+//   return zipBlob;
+// }
 
-// 递归读取目录
-async function readDirectoryRecursive(directoryEntry, zip, currentPath) {
-  const reader = directoryEntry.createReader();
-  const entries = await new Promise((resolve, reject) => {
-    reader.readEntries(resolve, reject);
-  });
+// // 递归读取目录
+// async function readDirectoryRecursive(directoryEntry, zip, currentPath) {
+//   const reader = directoryEntry.createReader();
+//   const entries = await new Promise((resolve, reject) => {
+//     reader.readEntries(resolve, reject);
+//   });
 
-  for (const entry of entries) {
-    const entryPath = `${currentPath}${entry.name}`;
+//   for (const entry of entries) {
+//     const entryPath = `${currentPath}${entry.name}`;
 
-    if (entry.isFile) {
-      // 如果是文件，读取文件内容并添加到 ZIP 中
-      const fileContent = await readFile(entry);
-      zip.file(entryPath, fileContent);
-    } else if (entry.isDirectory) {
-      // 如果是目录，递归读取目录
-      const subZip = zip.folder(entryPath);
-      await readDirectoryRecursive(entry, subZip, `${entryPath}/`);
-    }
-  }
-}
+//     if (entry.isFile) {
+//       // 如果是文件，读取文件内容并添加到 ZIP 中
+//       const fileContent = await readFile(entry);
+//       zip.file(entryPath, fileContent);
+//     } else if (entry.isDirectory) {
+//       // 如果是目录，递归读取目录
+//       const subZip = zip.folder(entryPath);
+//       await readDirectoryRecursive(entry, subZip, `${entryPath}/`);
+//     }
+//   }
+// }
 
-// 读取文件内容
-function readFile(fileEntry) {
-  return new Promise((resolve, reject) => {
-    fileEntry.file((file) => {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        resolve(event.target.result);
-      };
-      reader.onerror = reject;
-      reader.readAsArrayBuffer(file);
-    }, reject);
-  });
-}
+// // 读取文件内容
+// function readFile(fileEntry) {
+//   return new Promise((resolve, reject) => {
+//     fileEntry.file((file) => {
+//       const reader = new FileReader();
+//       reader.onload = (event) => {
+//         resolve(event.target.result);
+//       };
+//       reader.onerror = reject;
+//       reader.readAsArrayBuffer(file);
+//     }, reject);
+//   });
+// }
 
 // 示例使用方法
 // const directoryEntry = /* your DirectoryEntry object */

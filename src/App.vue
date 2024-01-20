@@ -3,13 +3,11 @@ import { MenuClickOptions, type MenuData } from '@idux/components/menu'
 import AppLogo from '@/assets/images/logo.svg'
 import { useUserStoreWithOut, useCommonStoreWithOut } from '@/store';
 import router from './router';
-// import { useMessage } from '@idux/components/message'
 const logo = {
   image: AppLogo,
   title: 'CloudDrive',
   link: '/',
 }
-// const message = useMessage()
 const route = useRoute()
 const userStore = useUserStoreWithOut()
 const commonStore = useCommonStoreWithOut()
@@ -33,23 +31,15 @@ const menuHandluer = (options: MenuClickOptions) => {
  * @description 清除 cookie 存放的 token  并跳转到登录页面
  */
 const logout = () => {
-  userStore.changeLoginState(false)
-  userStore.changeState({
-    key: 'isLogin',
-    value: false
-  })
   commonStore.changeState({
     key: 'curRoute',
     value: '/'
   })
+  userStore.clearState()
+  // requestHandler<string, LoginRqType>(userapi.login, "post", formGroup.getValue());
   router.push('/login')
-  // message.success('退出登录成功！')
-  // this.$common.removeCookies(this.$config.tokenKeyName)
-  // this.$store.dispatch('getUserInfo').then(() => {
-  //   this.$router.push({ name: 'Home' })
-  // })
 }
-onMounted(()=>{
+onMounted(() => {
   commonStore.changeState({
     key: 'curRoute',
     value: history.state.current
@@ -59,7 +49,7 @@ onMounted(()=>{
 
 <template>
   <div class="h-screen w-screen">
-    <IxMessageProvider> 
+    <IxMessageProvider>
       <IxModalProvider>
         <IxProLayout clas="m-0 p-0 bg-blue-500" :onMenuClick="menuHandluer" :activeKey="commonStore.curRoute" :logo="logo"
           :menus="userStore.isLogin ? menuData : []" :type="showLayoutFlag ? 'both' : 'header'" theme="light">
@@ -68,11 +58,11 @@ onMounted(()=>{
           </template>
           <template #headerExtra>
             <IxButtonGroup v-if="!userStore.isLogin" align="center" block justify="space-between" :gap="8" mode="text">
-              <IxButton><router-link to="register">注册</router-link></IxButton>
+              <IxButton><router-link to="registe">注册</router-link></IxButton>
               <IxButton><router-link to="login">登录</router-link></IxButton>
             </IxButtonGroup>
             <IxButtonGroup v-else align="center" block justify="space-between" :gap="8" mode="text">
-              <IxButton>{{ userStore.userInfo.name }}</IxButton>
+              <IxButton>{{ userStore.userInfo.UserName }}</IxButton>
               <IxButton @click="logout">退出</IxButton>
             </IxButtonGroup>
           </template>

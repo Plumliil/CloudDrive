@@ -40,9 +40,9 @@ export type LoginRpType = {
 export type RegistrationRqType = {
   UserName: string,
   Phone: string,
-  Password: string,
+  PassWord: string,
   Email: string,
-  Sex: number
+  Sex?: number
 }
 export type RegistrationRpType = {
   UserName: string,

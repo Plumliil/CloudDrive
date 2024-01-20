@@ -24,6 +24,11 @@ const routes = [
     name: 'File',
     component: import('@/views/File.vue'),
   },
+  {
+    path: '/registe',
+    name: 'Registe',
+    component: import('@/views/Registe.vue'),
+  },
   // {
   //   path: '/upload',
   //   name: 'Upload',

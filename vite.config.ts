@@ -42,10 +42,10 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
-      '/cdApi': {
-        target: 'https://v5698k5455.vicp.fun',
+      '/CloudDrive': {
+        target: 'https://v5698k5455.vicp.fun/CloudDrive',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/cdApi/, ''),
+        rewrite: (path) => path.replace(/^\/CloudDrive/, ''),
       },
     }
   },

@@ -1,25 +1,38 @@
 
-import { getToken } from '@/plugins/cookie'
-import axios, { AxiosResponse, AxiosRequestConfig } from 'axios'
-import { useMessage } from '@idux/components/message'
-const message = useMessage()
+import axios, { AxiosResponse, AxiosRequestConfig, AxiosError } from 'axios'
+import router from '@/router'
+import { message } from 'ant-design-vue'
+import { useUserStoreWithOut } from '@/store'
+
+const userStore = useUserStoreWithOut()
+
 const serviceAxios = axios.create({
   baseURL: '/',
   timeout: 5000,
   headers: {
-    'Access-Control-Allow-Origin': '*',
     Source: 1
   }
 })
+
+
+/**
+ * @desc: 异常拦截处理器
+ * @param { Object } error 错误信息
+ */
+const errorHandler = (error: AxiosError): AxiosError | Promise<AxiosError> => {
+  userStore.clearState()
+  router.push({ path: '/login', query: { redirect: router.currentRoute.value.fullPath } })
+  return Promise.reject(error)
+}
+
 //请求拦截器
 serviceAxios.interceptors.request.use(
   config => {
     // 每次请求携带token
-    const token = getToken()
-    config.headers.Authorization = token
+    config!.headers!.AuthToken = localStorage.getItem('Authorization') || ''
     return config
   },
-  error => message.error(error)
+  errorHandler
 )
 serviceAxios.interceptors.response.use(
   (response: AxiosResponse) => {
@@ -76,9 +89,7 @@ serviceAxios.interceptors.response.use(
     return Promise.reject(error.message)
   })
 )
-// interface axiosParams<T> extends AxiosResponse {
-//     data: T
-// }
+
 interface customDataParams<T> { //根据后端返回的估固定🧷格式
   Message: string,
   IsSuccess: boolean,
@@ -87,9 +98,7 @@ interface customDataParams<T> { //根据后端返回的估固定🧷格式
   Data: T | null
 }
 
-// type returnResponseType<T> = axiosParams<customDataParams<T>>
 type methodType = 'get' | 'post' | 'put' | 'delete'
-
 
 type paramsData<T> = {
   params?: T,
