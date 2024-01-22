@@ -3,7 +3,7 @@ import { useUserStoreWithOut } from '@/store';
 import { useMessage } from '@idux/components/message'
 import { Validators, useFormGroup } from '@idux/cdk/forms'
 import requestHandler from '@/request';
-import userapi from '@/api/userapi'
+import { userapi } from '@/api'
 import router from '@/router';
 import { jwtDecode } from "jwt-decode";
 import type { LoginRqType } from '@/api/type'
@@ -27,7 +27,7 @@ const formGroup = useFormGroup({
 
 const login = async () => {
   const { IsSuccess, Data, Message } = await requestHandler<string, LoginRqType>(userapi.login, "post", formGroup.getValue());
-  if (!IsSuccess && Data) return message.error(Message)
+  if (!IsSuccess && !Data) return message.error(Message)
   message.success("登录成功")
   const decode: JWT_Type = jwtDecode(Data as string);
   LocalStorageCache.setItem('Authorization', Data)

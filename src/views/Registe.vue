@@ -2,7 +2,7 @@
 import { useMessage } from '@idux/components/message'
 import { Validators, useFormGroup } from '@idux/cdk/forms'
 import requestHandler from '@/request';
-import userapi from '@/api/userapi'
+import {userapi} from '@/api'
 import router from '@/router';
 import type { RegistrationRqType } from '@/api/type'
 const message = useMessage()

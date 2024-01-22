@@ -3,7 +3,7 @@
  * @param value 复制目标
  * @returns 复制指
  */
-export function copyText(value: string) {
+export function copyDomText(value: string) {
   if (navigator.clipboard && window.isSecureContext) {
     // navigator clipboard 向剪贴板写文本
     navigator.clipboard.writeText(value)

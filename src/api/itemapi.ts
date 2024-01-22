@@ -1,4 +1,5 @@
 import module from './module'
-export const api = {
-  uploadFile: module.item + '/UpLoadFile'
+export default {
+  uploadFile: module.item + '/UpLoadFile',
+  getFiles: module.item + '/GetFiles',
 }

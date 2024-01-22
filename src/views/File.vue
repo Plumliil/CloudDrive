@@ -12,6 +12,7 @@ import { ColumnType, FileDataType, FileDisPlayType, FileType } from '@/type'
 import { LocationQueryValue } from 'vue-router'
 import { folderList } from '@/mock'
 import { useModal } from '@idux/components/modal'
+import { itemapi } from '@/api'
 
 const fileData: FileDataType[] = [
   {
@@ -201,6 +202,8 @@ const fileData: FileDataType[] = [
 ];
 import { Validators, useFormGroup } from '@idux/cdk/forms'
 import { TreeNode } from '@idux/components/tree/src/types'
+import requestHandler from '@/request'
+import { GetFileRpType, GetFileRqType } from '@/api/type'
 
 const { required } = Validators
 
@@ -335,8 +338,15 @@ const dragControllerDiv = () => {
   }
 }
 
-onMounted(() => {
+onMounted(async () => {
   dragControllerDiv()
+  const { IsSuccess, Data, Message } = await requestHandler<GetFileRpType[], GetFileRqType>(itemapi.getFiles, "post", {
+    FileType: 'All',
+    PageIndex: 1,
+    PageSize: 10
+  });
+  console.log('IsSuccess, Data, Message ', { IsSuccess, Data, Message });
+
 })
 
 const siderShowHandle = (flag: boolean) => {
@@ -572,9 +582,9 @@ const uploadHandle = (options: MenuClickOptions) => {
       <FileTable ref="tableRef" :setSelectData="setSelectData" v-if="fileStore.displayType === 'table'"
         :type="activeRouteType" :dataSource="dataSource" />
       <FileList ref="listRef" :setSelectData="setSelectData" :move-handle="() => moveFileVisibleChange(true)"
-        :delete-handle="() => deleteFileHandle()" :rename-handle="()=>renameVisibleChange(true)" :share-handle="() => shareFileVisibleChange(true)"
-        :key="fileStore.columnsType.join(',')" v-else-if="fileStore.displayType === 'list'" :type="activeRouteType"
-        :dataSource="dataSource" />
+        :delete-handle="() => deleteFileHandle()" :rename-handle="() => renameVisibleChange(true)"
+        :share-handle="() => shareFileVisibleChange(true)" :key="fileStore.columnsType.join(',')"
+        v-else-if="fileStore.displayType === 'list'" :type="activeRouteType" :dataSource="dataSource" />
       <TimeLine v-else-if="fileStore.displayType === 'timeLine'" :type="activeRouteType" :dataSource="dataSource" />
       <IxModal :destroyOnHide="true" :visible="createFolderVisible" @ok="okcreateFolderHandle" header="新建文件夹"
         @cancel="createFolderVisibleChange(false)" @close="createFolderVisibleChange(false)" :centered="false"
@@ -586,8 +596,7 @@ const uploadHandle = (options: MenuClickOptions) => {
         </IxForm>
       </IxModal>
       <IxModal :destroyOnHide="true" :visible="renameVisible" @ok="okrenameHandle" header="文件重命名"
-        @cancel="renameVisibleChange(false)" @close="renameVisibleChange(false)" :centered="false"
-        :width="400">
+        @cancel="renameVisibleChange(false)" @close="renameVisibleChange(false)" :centered="false" :width="400">
         <IxForm :control="renameFileForm">
           <IxFormItem label="文件名" required>
             <IxInput control="newName"></IxInput>

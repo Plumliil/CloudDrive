@@ -17,16 +17,23 @@ export type CreateFolderRpType = {
 }
 
 export type GetFileRqType = {
-  FileType: string,
-  LeafName: string,
+  FileType?: string,
+  LeafName?: string,
   PageIndex: number,
   PageSize: number
 }
 export type GetFileRpType = {
-  FileType: string,
+  Id: number,
   LeafName: string,
-  PageIndex: number,
-  PageSize: number
+  Extension: string,
+  Path: string,
+  ParentFolderId: number,
+  Idpath: string,
+  IsFolder: number,
+  FileType: number,
+  IsDel: number,
+  CreatedDate: string,
+  FileSize: number
 }
 // userapi
 export type LoginRqType = {
