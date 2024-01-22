@@ -49,9 +49,10 @@ onMounted(() => {
 
 <template>
   <div class="h-screen w-screen">
-    <IxMessageProvider>
+    <router-view v-if="commonStore.curRoute.includes('/preview')" class="m-0 p-0"></router-view>
+    <IxMessageProvider v-else>
       <IxModalProvider>
-        <IxProLayout clas="m-0 p-0 bg-blue-500" :onMenuClick="menuHandluer" :activeKey="commonStore.curRoute" :logo="logo"
+        <IxProLayout class="m-0 p-0" :onMenuClick="menuHandluer" :activeKey="commonStore.curRoute" :logo="logo"
           :menus="userStore.isLogin ? menuData : []" :type="showLayoutFlag ? 'both' : 'header'" theme="light">
           <template #itemLabel="item">
             <router-link :to="item.key">{{ item.label }}</router-link>

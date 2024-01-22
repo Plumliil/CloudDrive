@@ -29,6 +29,11 @@ const routes = [
     name: 'Registe',
     component: import('@/views/Registe.vue'),
   },
+  {
+    path: '/preview',
+    name: 'Registe',
+    component: import('@/views/onlinePreview/index.vue'),
+  },
   // {
   //   path: '/upload',
   //   name: 'Upload',
