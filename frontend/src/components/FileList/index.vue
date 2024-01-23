@@ -179,6 +179,12 @@ const submitHandle = async () => {
 
 }
 
+const goPreview = (record: FileDataType) => {
+  window.open(`/preview?id=${record.name}`, '_black')
+  console.log('record', record);
+
+}
+
 </script>
 
 <template>
@@ -189,7 +195,7 @@ const submitHandle = async () => {
         <div @dragover="() => showUploadTip(record)" @drop="() => mouseoverHandle(record)"
           class="flex justify-start items-center" @click.stop @contextmenu="(e) => rightClick(e, record)">
           <IxImage :src="getFileIcon(`${record.name}.${record.type}`)" :preview="false" />
-          <IxButton mode="link">{{ record.name }}</IxButton>
+          <IxButton mode="link" @click="() => goPreview(record)">{{ record.name }}</IxButton>
           <span v-if="record.type === 'folder'"
             :class="['pl-16', curUploadKey === record.key ? 'text-gray-400' : 'text-white']">上传到此处</span>
         </div>
@@ -199,7 +205,7 @@ const submitHandle = async () => {
         }}</div>
       </template>
       <template #size="{ record }">
-        <div class="p-2" @click.stop @contextmenu="(e) => rightClick(e, record)">{{ record.type
+        <div class="p-2" @click.stop @contextmenu="(e) => rightClick(e, record)">{{ record.size
         }}</div>
       </template>
       <template #changeDate="{ record }">
