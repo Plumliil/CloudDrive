@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="9.0.0" />
+    <PackageReference Include="AutoMapper" Version="11.0.0" />
+    <PackageReference Include="Minio" Version="6.0.1" />
+    <PackageReference Include="ServiceStack.Client" Version="8.0.0" />
+    <PackageReference Include="JWT" Version="9.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Ptcent.Cloud.Drive.WebApi.Domain.Dto\Ptcent.Cloud.Drive.WebApi.Domain.Dto.csproj" />
+    <ProjectReference Include="..\Ptcent.Cloud.Drive.WebApi.Domain.Entities\Ptcent.Cloud.Drive.WebApi.Domain.Entities.csproj" />
+    <ProjectReference Include="..\Ptcent.Cloud.Drive.WebApi.Domain.Infrastructure\Ptcent.Cloud.Drive.WebApi.Infrastructure.csproj" />
+    <ProjectReference Include="..\Ptcent.Cloud.Drive.WebApi.Domain.IRepositories\Ptcent.Cloud.Drive.WebApi.Domain.IRepositories.csproj" />
+    <ProjectReference Include="..\Ptcent.Cloud.Drive.WebApi.Domain.Repositories\Ptcent.Cloud.Drive.WebApi.Domain.Repositories.csproj" />
+  </ItemGroup>
+</Project>
