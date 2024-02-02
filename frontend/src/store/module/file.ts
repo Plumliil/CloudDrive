@@ -5,15 +5,12 @@ import { FileStoreType } from '@/type'
 const useFileStore = defineStore({
   id: 'file',
   persist: true,
-  state: () => {
-    const state: FileStoreType = {
-      displayType: 'list',
-      columnsType:  ['name', 'type', 'size', 'changeDate', 'deleteDate'],
-      routeType: 'other',
-      siderState:'show'
-    }
-    return state
-  },
+  state: (): FileStoreType => ({
+    displayType: 'list',
+    columnsType: ['name', 'type', 'size', 'changeDate', 'deleteDate'],
+    routeType: 'other',
+    siderState: 'show'
+  }),
   actions: {
     changeState<K extends keyof FileStoreType>(payload: { key: K, value: FileStoreType[K] }) {
       this.$patch({ [payload.key]: payload.value })
