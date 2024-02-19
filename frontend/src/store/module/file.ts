@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { store } from '@/store'
-import { FileStoreType } from '@/type'
+import { FileStoreType } from '../type'
 // import { getToken } from '@/utils/http/cookie'
 const useFileStore = defineStore({
   id: 'file',

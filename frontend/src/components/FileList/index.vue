@@ -2,7 +2,7 @@
 import requestHandler from '@/request';
 import { getFileIcon } from '@/utils/file.ts'
 import { useFileStoreWithOut } from '@/store';
-import { useDragUploadv2 } from '@/hooks'
+import { useDragUpload } from '@/hooks'
 import { FileDataType, FileDisplayPropsType } from '@/type';
 import { menusEvent } from 'vue3-menus';
 import { TableColumn, TableColumnSelectable, TablePagination } from '@idux/components/table'
@@ -150,7 +150,7 @@ const dragoverHandle = (e: Event) => {
   e.preventDefault();
 }
 const dropHandle = (e: DragEvent) => {
-  useDragUploadv2(e).then((fileList: File[] | undefined) => {
+  useDragUpload(e).then((fileList: File[] | undefined) => {
     if (monseoverData.value?.type === 'folder' && fileList) {
       console.log('dropHandle fileList', fileList);
       tableFileList.value = fileList

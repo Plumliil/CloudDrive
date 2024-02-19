@@ -1,13 +1,13 @@
 import { defineStore } from 'pinia'
 import { store } from '@/store'
-import { UserStoreType } from '@/type'
+import { UserStoreType } from '../type'
 import { LocalStorageCache } from '@/utils'
 
 
 const useUserStore = defineStore({
   id: 'user',
   persist: true,
-  state: () => ({
+  state: ():UserStoreType => ({
     isLogin: false,
     userInfo: {
       UserId: '',

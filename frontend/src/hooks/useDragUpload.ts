@@ -1,34 +1,13 @@
-export default function (target: any) {
-  const fileListTemp = ref<File[]>([])
-  const fileList = ref<File[]>([])
-  target.addEventListener('mouseenter', (e: Event) => {
-    e.preventDefault();
-  })
-  target.addEventListener('dragover', (e: Event) => {
-    e.preventDefault();
-    e.stopPropagation();
-  })
-  target.addEventListener('drop', (e: DragEvent) => {
-    fileListTemp.value = []
-    if (!e.dataTransfer) return
-    let items = e.dataTransfer.items;
-    for (let i = 0; i <= items.length - 1; i++) {
-      let item = items[i];
-      if (item.kind === "file") {
-        // FileSystemFileEntry 或 FileSystemDirectoryEntry 对象
-        let entry = item.webkitGetAsEntry();
-        // 递归地获取entry下包含的所有File
-        getFileFromEntryRecursively(entry);
-      }
-    }
-    console.log('fileListTemp', fileListTemp);
-    fileList.value = fileListTemp.value
-    console.log('drop');
-    e.stopPropagation();
-    e.preventDefault(); // 阻止默认行为，避免浏览器打开拖拽文件的默认行为
-  })
+export default async function (e: any): Promise<File[]> {
+  if (!e.dataTransfer) return [];
+
+  const fileList: File[] = [];
+
   const getFileFromEntryRecursively = async (entry: any): Promise<void> => {
-    if (entry.isFile) {
+    console.log('entry', entry);
+
+    if (true) {
+      // if (entry.isFile) {
       try {
         const file = await new Promise<File>((resolve, reject) => {
           entry.file(resolve, reject);
@@ -50,14 +29,26 @@ export default function (target: any) {
         console.error(error);
       }
     }
-  }
-  const addFileToList = ({ file, path }: { file: File; path: string }): void => {
-    // 处理添加文件到列表的逻辑，可以根据需要修改
-    fileListTemp.value.push(file)
-  }
-  const removeFile = () => {
-    console.log('removeFile --------------------');
+  };
 
+  let items = e.dataTransfer.items;
+
+
+
+  // 使用 Promise.all 来等待所有异步操作完成
+  await Promise.all(
+    Array.from(items).map(async (item: any) => {
+      if (item.kind === "file") {
+        let entry = item.webkitGetAsEntry();
+        await getFileFromEntryRecursively(entry);
+      }
+    })
+  );
+
+  return Promise.resolve(fileList);
+
+  function addFileToList({ file, path }: { file: File; path: string }): void {
+    // 处理添加文件到列表的逻辑，可以根据需要修改
+    fileList.push(file);
   }
-  return { fileList, removeFile, id: target.id }
 }
