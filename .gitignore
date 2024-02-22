@@ -39,3 +39,8 @@ dist-ssr
 /backend/Ptcent.Cloud.Drive.WebApi.Domain.Repositories/bin/Debug/net8.0
 /backend/Ptcent.Cloud.Drive.WebApi.Domain.Repositories/obj
 /backend/.vs/Ptcent.Cloud.Drive.WebApi
+/backend/CleanArchitecture-Ptcent.Cloud.Drive/LICENSE
+/backend/CleanArchitecture-Ptcent.Cloud.Drive/doc/CleanArchitecture-DEV-Template.jpg
+/backend/CleanArchitecture-Ptcent.Cloud.Drive/.gitignore
+/backend/CleanArchitecture-Ptcent.Cloud.Drive/README.md
+/backend/CleanArchitecture-Ptcent.Cloud.Drive/src/.vs
