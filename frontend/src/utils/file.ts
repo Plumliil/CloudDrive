@@ -59,7 +59,21 @@ export function getFileIcon(fileName: string) {
   return logoMap[ext] || logoMap.unknow;
 }
 
+// const arrayBufferToBase64 = (buffer) => {
+//   let binary = ''
+//   const bytes = new Uint8Array(buffer)
+//   const len = bytes.byteLength
+//   for (let i = 0; i < len; i++)
+//     binary += String.fromCharCode(bytes[i])
 
+//   return window.btoa(binary)
+// }
+// const getFilestremById = (uri) => {
+//   return request(uri, {
+//     method: 'get',
+//     responseType: 'blob',
+//   })
+// }
 
 
 // 引入 jszip 库
