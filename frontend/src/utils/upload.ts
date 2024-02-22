@@ -20,7 +20,6 @@ const createFileChunk = (file: File, hash: string, size = ChunkSize) => {
       chunk: file.slice(curr, curr + size) // 分片文件
     })
     console.log(`${hash}-${index}.${file.name.substring(file.name.lastIndexOf(".") + 1)}`);
-
     curr += size
     index++
   }
@@ -81,16 +80,18 @@ const uploadChunks = async (
   let index = 0;
   let taskPool: Array<Promise<any>> = []; // 任务执行池
   while (index < requests.length) {
-    const task = requestHandler("/upload", "post", requests[index].form); // 这个一个认任务
-    task.then(() => {
-      // then 执行之后，意味着 请求已经完成， 将池子里面的任务移除掉
-      taskPool.splice(taskPool.findIndex((i) => i === task));
-    });
-    taskPool.push(task); // 每次将任务放入池子
-    if (max === taskPool.length) {
-      // 此时意味着已经有6个任务了
-      await Promise.race(taskPool); // 至少等待有一个任务完成才继续下一不循环
-    }
+    console.log('requests[index].form',requests[index].form);
+    
+    // const task = requestHandler("/api/upload", "post", requests[index].form); // 这个一个认任务
+    // task.then(() => {
+    //   // then 执行之后，意味着 请求已经完成， 将池子里面的任务移除掉
+    //   taskPool.splice(taskPool.findIndex((i) => i === task));
+    // });
+    // taskPool.push(task); // 每次将任务放入池子
+    // if (max === taskPool.length) {
+    //   // 此时意味着已经有6个任务了
+    //   await Promise.race(taskPool); // 至少等待有一个任务完成才继续下一不循环
+    // }
     index++;
   }
   // 这个时候 要判断是不是已经上传完所以切片

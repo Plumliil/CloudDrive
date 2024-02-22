@@ -4,16 +4,16 @@ import { useUserStoreWithOut, useCommonStoreWithOut } from '@/store/index'
 // const userStore = useUserStoreWithOut()
 const commonStore = useCommonStoreWithOut()
 const routes = [
-  // {
-  //   path: '/',
-  //   name: 'Upload',
-  //   component: import( '@/views/Upload.vue'),
-  // },
   {
     path: '/',
-    name: 'Home',
-    component: Home,
+    name: 'TextPreview',
+    component: import( '@/views/TextPreview.vue'),
   },
+  // {
+  //   path: '/',
+  //   name: 'Home',
+  //   component: Home,
+  // },
   {
     path: '/login',
     name: 'Login',
