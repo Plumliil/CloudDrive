@@ -8,5 +8,5 @@
 
 ## 后端
 
-### .Net
+### .Net8+Redis+ES+RabbitMQ+MediatR
 
