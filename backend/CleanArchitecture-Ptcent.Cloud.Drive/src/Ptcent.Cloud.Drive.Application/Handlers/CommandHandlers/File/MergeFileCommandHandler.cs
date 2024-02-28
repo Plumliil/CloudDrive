@@ -4,7 +4,6 @@ using Ptcent.Cloud.Drive.Application.Dto.RequestModels;
 using Ptcent.Cloud.Drive.Domain.Entities;
 using Ptcent.Cloud.Drive.Domain.Enum;
 using Ptcent.Cloud.Drive.Infrastructure.IRespository;
-using Ptcent.Cloud.Drive.Infrastructure.Respository;
 using Ptcent.Cloud.Drive.Shared.Extensions;
 using Ptcent.Cloud.Drive.Shared.Util;
 using System.Transactions;
@@ -29,13 +28,12 @@ namespace Ptcent.Cloud.Drive.Application.Handlers.CommandHandlers.File
             var response = new ResponseMessageDto<bool>() { IsSuccess = true };
             long fileId = idGenerator.NewLong();
             long versionId = idGenerator.NewLong();
-            string mergeFilePath=string.Empty;
+            string mergeFilePath=string.Empty; 
             try
             {
                 var exName = Path.GetExtension(request.FileName);
                 var fileType = CommonExtension.JudgmentFileType(exName);
                 FileEntity fileEntity = new FileEntity();
-               
                 fileEntity.Id = fileId;
                 fileEntity.VersionId = versionId;
                 fileEntity.LeafName = request.FileName;
@@ -67,6 +65,7 @@ namespace Ptcent.Cloud.Drive.Application.Handlers.CommandHandlers.File
                 string[] files = Directory.GetFiles(mergeFilePath, $"{prefix}_*");
                 // 按 "_数字" 后缀升序排序
                 var sortedFiles = files.OrderBy(file => ExtractNumberFromFileName(file));
+                filePath = Path.Combine(ConfigUtil.GetValue("FileRootPath"), filePath);
                 //合并文件
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
@@ -84,8 +83,6 @@ namespace Ptcent.Cloud.Drive.Application.Handlers.CommandHandlers.File
                     Directory.Delete(mergeFilePath, true);
                     scope.Complete();
                 }
-
-               
                 #region 待定
                 //await Policy.Handle<IOException>()  待定
                 //         .RetryForeverAsync()

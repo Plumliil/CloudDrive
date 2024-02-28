@@ -1,4 +1,6 @@
-﻿using Ptcent.Cloud.Drive.Domain.Entities;
+﻿using Ptcent.Cloud.Drive.Domain.Constants;
+using Ptcent.Cloud.Drive.Domain.Entities;
+using Ptcent.Cloud.Drive.Infrastructure.Cache;
 using Ptcent.Cloud.Drive.Infrastructure.Context;
 using Ptcent.Cloud.Drive.Infrastructure.IRespository;
 using System;
@@ -14,6 +16,26 @@ namespace Ptcent.Cloud.Drive.Infrastructure.Respository
         public FileRepository(EFDbContext db) : base(db)
         {
         }
+        /// <summary>
+        /// 获取单个文件缓存
+        /// </summary>
+        /// <param name="fileId"></param>
+        /// <returns></returns>
+        public async Task<FileEntity> GetFileCacheByItemId(long fileId)
+        {
+            var cachKey = CacheKey.Ptcent_Cloud_Drive_Item_SingleItem + fileId;
+            var fileEntity = RedisClient.Get<FileEntity>(cachKey);
+            if (fileEntity == null)
+            {
+                fileEntity = await GetById(fileId);
+                if (fileEntity != null)
+                {
+                    RedisClient.Insert<FileEntity>(cachKey, fileEntity, new TimeSpan(30, 0, 0, 0));
+                }
+            }
+            return fileEntity;
+        }
+
         /// <summary>
         /// 保存文件实体
         /// </summary>

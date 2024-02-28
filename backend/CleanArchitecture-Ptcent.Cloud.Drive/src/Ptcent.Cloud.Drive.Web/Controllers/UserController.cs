@@ -14,6 +14,11 @@ namespace Ptcent.Cloud.Drive.Web.Controllers
     {
         private readonly IConfiguration config;
         private readonly IMediator mediator;
+        /// <summary>
+        /// 用户模块
+        /// </summary>
+        /// <param name="config"></param>
+        /// <param name="mediator"></param>
         public UserController(IConfiguration config, IMediator mediator) : base(config)
         {
             this.config = config;

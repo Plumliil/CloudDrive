@@ -14,6 +14,12 @@ namespace Ptcent.Cloud.Drive.Web.Controllers
         private readonly IConfiguration config;
         private readonly IMediator mediator;
         private readonly IHttpContextAccessor httpContextAccessor;
+        /// <summary>
+        /// 注入
+        /// </summary>
+        /// <param name="config"></param>
+        /// <param name="mediator"></param>
+        /// <param name="httpContextAccessor"></param>
         public ItemController(IConfiguration config, IMediator mediator, IHttpContextAccessor httpContextAccessor) : base(config)
         {
             this.config = config;
@@ -46,7 +52,7 @@ namespace Ptcent.Cloud.Drive.Web.Controllers
         /// <param name="upLoadFileRequestDto"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ResponseMessageDto<bool>> BlockUpload(UpLoadFileRequestDto upLoadFileRequestDto)
+        public async Task<ResponseMessageDto<bool>> BlockUpload([FromForm] UpLoadFileRequestDto upLoadFileRequestDto)
         {
             return await mediator.Send(upLoadFileRequestDto);
         }
@@ -57,7 +63,7 @@ namespace Ptcent.Cloud.Drive.Web.Controllers
         [HttpPost]
         public async Task<ResponseMessageDto<bool>> MergeChunkFile(MergeChunkFileRequestDto mergeChunkFileRequestDto)
         {
-
+            return await mediator.Send(mergeChunkFileRequestDto);
         }
     }
 }

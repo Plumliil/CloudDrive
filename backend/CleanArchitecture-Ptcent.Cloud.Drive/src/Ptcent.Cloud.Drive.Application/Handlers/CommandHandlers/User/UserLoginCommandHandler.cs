@@ -58,7 +58,7 @@ namespace Ptcent.Cloud.Drive.Application.Handlers.CommandHandlers.User
                 {
                     //将信息记录在Redis
                     respone.Data = loginInfoResult.Data;
-                    RedisClient.Insert(CacheKey.Ptcent_YiDoc_User_Login_Status + userEntity.Id, UserLoginStatus.Login.GetHashCode().ToString(), new TimeSpan(Convert.ToInt32(config["UserLoingExpires"] ?? "30"), 0, 0, 0));
+                    RedisClient.Insert(CacheKey.Ptcent_Cloud_Drive_WebApi_User_Login_Status + userEntity.Id, UserLoginStatus.Login.GetHashCode().ToString(), new TimeSpan(Convert.ToInt32(config["UserLoingExpires"] ?? "30"), 0, 0, 0));
                 }
                 else
                 {

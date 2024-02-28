@@ -11,10 +11,14 @@ namespace Ptcent.Cloud.Drive.Domain.Constants
         /// <summary>
         /// 用户登录状态
         /// </summary>
-        public const string Ptcent_YiDoc_User_Login_Status = "Ptcent.YiDoc.User.WebApi_User_Login_Status";
+        public const string Ptcent_Cloud_Drive_WebApi_User_Login_Status = "Ptcent.Cloud.Drive.WebApi_User_Login_Status";
         /// <summary>
         /// 用户修改密码时间
         /// </summary>
-        public const string Ptcent_YiDoc_User_WebApi_UpdatePwd_ModifyTime_UserId = "TRS_Ptcent_YiDoc_User_WebApi_UpdatePwd_ModifyTime_UserId_";
+        public const string Ptcent_Cloud_Drive_User_WebApi_UpdatePwd_ModifyTime_UserId = "Ptcent_Cloud_Drive_User_WebApi_UpdatePwd_ModifyTime_UserId_";
+        /// <summary>
+        /// 单个文档
+        /// </summary>
+        public const string Ptcent_Cloud_Drive_Item_SingleItem = "Ptcent_Cloud_Drive_Item_SingleItem_";
     }
 }

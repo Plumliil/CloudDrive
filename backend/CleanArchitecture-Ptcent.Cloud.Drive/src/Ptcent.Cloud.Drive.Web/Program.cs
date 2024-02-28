@@ -9,7 +9,6 @@ using Ptcent.Cloud.Drive.Shared.Util;
 using Ptcent.Cloud.Drive.Web.Filter;
 using Ptcent.Cloud.Drive.Web.Options;
 using System.Text;
-using Microsoft.Extensions.PlatformAbstractions;
 using Ptcent.Cloud.Drive.Application.Dto.Common;
 using Ptcent.Cloud.Drive.Shared.RouteUtil;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -23,6 +22,7 @@ using Ptcent.Cloud.Drive.Web;
 using Autofac.Extensions.DependencyInjection;
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using Microsoft.Extensions.PlatformAbstractions;
 
 var builder = WebApplication.CreateBuilder(args);
 

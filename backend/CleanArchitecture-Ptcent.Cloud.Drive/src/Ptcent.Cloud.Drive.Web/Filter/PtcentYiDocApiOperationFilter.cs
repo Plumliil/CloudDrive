@@ -113,7 +113,7 @@ namespace Ptcent.Cloud.Drive.Web.Filter
                             var claimsIdentity = new ClaimsIdentity(tokenObj.Claims);
                             var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
                             actionContext.HttpContext.User = claimsPrincipal;
-                            var pwdModifyTime = RedisClient.Get<DateTime>(CacheKey.Ptcent_YiDoc_User_WebApi_UpdatePwd_ModifyTime_UserId + loginUserDto.UserId);
+                            var pwdModifyTime = RedisClient.Get<DateTime>(CacheKey.Ptcent_Cloud_Drive_User_WebApi_UpdatePwd_ModifyTime_UserId + loginUserDto.UserId);
                             if (loginUserDto.TokenCreateTime < pwdModifyTime)
                             {
                                 res.Message = "用户密码修改请重新登录";
@@ -121,7 +121,7 @@ namespace Ptcent.Cloud.Drive.Web.Filter
                                 actionContext.Result = new JsonResult(res);
                                 return;
                             }
-                            var userLoginVlaue = RedisClient.Get<string>(CacheKey.Ptcent_YiDoc_User_Login_Status + loginUserDto.UserId);
+                            var userLoginVlaue = RedisClient.Get<string>(CacheKey.Ptcent_Cloud_Drive_WebApi_User_Login_Status + loginUserDto.UserId);
                             if (userLoginVlaue == UserLoginStatus.LoginOut.GetHashCode().ToString())
                             {
                                 res.Message = "用户未登录";
