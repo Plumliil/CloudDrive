@@ -1,5 +1,5 @@
 export default {
-  item: '/CloudDrive/Item',
-  user: '/CloudDrive/User',
+  item: '/cloudapi/Item',
+  user: '/cloudapi/User',
   proxy: '/cdApi'
 }
