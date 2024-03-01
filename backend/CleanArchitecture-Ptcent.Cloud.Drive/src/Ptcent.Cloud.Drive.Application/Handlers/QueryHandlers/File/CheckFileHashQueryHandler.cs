@@ -24,11 +24,13 @@ namespace Ptcent.Cloud.Drive.Application.Handlers.QueryHandlers.File
             if (isFileExit)
             {
                 response.Message = "存在Hash一致的文件";
+                response.Data= true;
                 return response;
             }
             else
             {
-                response.IsSuccess=false;
+                response.IsSuccess=true;
+                response.Data = false;
                 return response;
             }
         }

@@ -32,6 +32,7 @@ namespace Ptcent.Cloud.Drive.Application.Handlers.CommandHandlers.File
             if (request.FormFiles==null||request.FormFiles.Count()==0)
             {
                 response.IsSuccess = false;
+                response.Data = false;
                 response.Message = "文件为空!";
                 return response;
             }
@@ -40,21 +41,24 @@ namespace Ptcent.Cloud.Drive.Application.Handlers.CommandHandlers.File
             if (string.IsNullOrEmpty(allowUploadFileType))
             {
                 response.IsSuccess = false;
+                response.Data = false;
                 response.Message = $"allowUploadFileType配置节点不存在";
                 return response;
             }
             var allowUploadFileTypes = allowUploadFileType.Split(',').ToList();
             var fileTypes = request.FormFiles.Select(a => Path.GetExtension(a.FileName)).ToList();
-            var excludeFileTypes = allowUploadFileTypes.Intersect(fileTypes).ToList(); ;
+            var excludeFileTypes = allowUploadFileTypes.Intersect(fileTypes).ToList(); 
             if (!excludeFileTypes.IsNull())
             {
                 string excludeFileType = string.Join(",", excludeFileTypes);
                 response.IsSuccess = false;
+                response.Data = false;
                 response.Message = $"{excludeFileType}类型文件不允许上传";
                 return response;
             }
-            //创建临时文件夹
-            string savePath =Path.Combine(ConfigUtil.GetValue("FileRootPath"), "TempFile");
+
+
+         
             //获取文件名的
             // 查找下划线的索引
             foreach (var file in request.FormFiles)
@@ -62,18 +66,21 @@ namespace Ptcent.Cloud.Drive.Application.Handlers.CommandHandlers.File
                 var fileName = Path.GetFileName(file.FileName);
                 int underscoreIndex = fileName.IndexOf('_');
                 string prefix = underscoreIndex != -1 ? fileName.Substring(0, underscoreIndex) : fileName;
+                //创建临时文件夹
+                string savePath = Path.Combine(ConfigUtil.GetValue("FileRootPath"), "TempFile", prefix);
                 savePath = savePath +"\\"+ prefix;
                 //创建文件夹
                 if (Directory.Exists(savePath))
                 {
                     Directory.CreateDirectory(savePath);
                 }
-                using (var chunkFileStream = new FileStream(savePath, FileMode.Open, FileAccess.Read))
+                using (var chunkFileStream = new FileStream(savePath,FileMode.Create, FileAccess.Write, FileShare.None, bufferSize: 81920, useAsync: true))
                 {
-                   await chunkFileStream.CopyToAsync(chunkFileStream);
+                   await file.CopyToAsync(chunkFileStream);
                 }
             }
-            response.IsSuccess=true;
+            response.Message = "上传成功";
+            response.Data = true;
             return response;
         }
     }

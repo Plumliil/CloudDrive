@@ -58,7 +58,7 @@ namespace Ptcent.Cloud.Drive.Domain.Entities
         /// <summary>
         /// 修改人
         /// </summary>
-        public long? UpdateBy { get; set; }
+        public long? UpdatedBy { get; set; }
         /// <summary>
         /// 删除时间
         /// </summary>

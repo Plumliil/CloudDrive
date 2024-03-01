@@ -60,12 +60,17 @@ namespace Ptcent.Cloud.Drive.Application.Handlers.CommandHandlers.File
                 string filePath = "SourceFiles" + Path.DirectorySeparatorChar + DateTime.Now.ToString("yyyy-MM-dd") + Path.DirectorySeparatorChar + fileEntity.Id.ToString() + Path.DirectorySeparatorChar + fileEntity.VersionId.ToString() + Path.DirectorySeparatorChar + fileEntity.Id.ToString() + fileEntity.Extension;
                 fileEntity.PhysicalDirectory = filePath;
                 //获取 合并目录下面的数据
-                 mergeFilePath = Path.Combine(ConfigUtil.GetValue("FileRootPath"), "TempFile", request.FileHash);
+                 mergeFilePath = Path.Combine(ConfigUtil.GetValue("FileRootPath"), "TempFile",request.FileHash);
                 string prefix = request.FileHash;
-                string[] files = Directory.GetFiles(mergeFilePath, $"{prefix}_*");
+                string[] files = Directory.GetFiles(mergeFilePath, $"{prefix}*");
                 // 按 "_数字" 后缀升序排序
                 var sortedFiles = files.OrderBy(file => ExtractNumberFromFileName(file));
-                filePath = Path.Combine(ConfigUtil.GetValue("FileRootPath"), filePath);
+               string dirPath = Path.Combine(ConfigUtil.GetValue("FileRootPath"), filePath.Replace(fileEntity.Id.ToString() + fileEntity.Extension,""));
+                filePath= Path.Combine(ConfigUtil.GetValue("FileRootPath"), filePath);
+                if (!Directory.Exists(dirPath))
+                {
+                    Directory.CreateDirectory(dirPath);
+                }
                 //合并文件
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
@@ -77,7 +82,7 @@ namespace Ptcent.Cloud.Drive.Application.Handlers.CommandHandlers.File
                 }
 
                 //同步更新数据
-                using (TransactionScope scope=new TransactionScope())
+                using (TransactionScope scope=new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
                 {
                    await fileRepository.SaveFileEntity(fileEntity, await userRepository.UserId(), true);
                     Directory.Delete(mergeFilePath, true);

@@ -46,7 +46,10 @@ namespace Ptcent.Cloud.Drive.Infrastructure.Respository
         public async Task<FileEntity> SaveFileEntity(FileEntity fileEntity, long userId, bool isSave = false)
         {
             fileEntity.CreatedDate = DateTime.Now;
+            fileEntity.UpdatedDate = DateTime.Now;
+            fileEntity.UpdatedBy = userId;
             fileEntity.CreatedBy = userId;
+            fileEntity.IsDel = 0;
             if (isSave)
             {
                 await Add(fileEntity);

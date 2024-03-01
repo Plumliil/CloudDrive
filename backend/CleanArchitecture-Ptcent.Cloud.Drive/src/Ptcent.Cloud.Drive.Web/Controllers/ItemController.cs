@@ -1,5 +1,6 @@
 ﻿
 using MediatR;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
 using Ptcent.Cloud.Drive.Application.Dto.ReponseModels;
 using Ptcent.Cloud.Drive.Application.Dto.RequestModels;
@@ -42,10 +43,7 @@ namespace Ptcent.Cloud.Drive.Web.Controllers
         /// <param name="fileHash"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ResponseMessageDto<bool>> CheckFileHash(string fileHash)
-        {
-            return await mediator.Send(new CheckFileHashRequestDto { FileHash=fileHash});
-        }
+        public async Task<ResponseMessageDto<bool>> CheckFileHash(string fileHash) =>  await mediator.Send(new CheckFileHashRequestDto { FileHash=fileHash});
         /// <summary>
         /// 分块上传
         /// </summary>
