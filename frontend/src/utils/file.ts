@@ -132,3 +132,96 @@ export function getFileIcon(fileName: string) {
 // const zipBlob = await compressDirectory(directoryEntry)
 
 // 现在，你可以将 zipBlob 上传到服务器，或者进行其他操作
+
+
+
+// {
+//   "data": {},
+//   "status": 200,
+//   "statusText": "OK",
+//   "headers": {
+//       "access-control-allow-origin": "*",
+//       "connection": "close",
+//       "content-disposition": "attachment; filename=img2.jpg; filename*=UTF-8''img2.jpg",
+//       "content-length": "135895",
+//       "content-type": "application/octet-stream",
+//       "date": "Mon, 26 Feb 2024 08:33:55 GMT",
+//       "server": "nginx/1.24.0"
+//   },
+//   "config": {
+//       "transitional": {
+//           "silentJSONParsing": true,
+//           "forcedJSONParsing": true,
+//           "clarifyTimeoutError": false
+//       },
+//       "adapter": [
+//           "xhr",
+//           "http"
+//       ],
+//       "transformRequest": [
+//           null
+//       ],
+//       "transformResponse": [
+//           null
+//       ],
+//       "timeout": 600000,
+//       "xsrfCookieName": "XSRF-TOKEN",
+//       "xsrfHeaderName": "X-XSRF-TOKEN",
+//       "maxContentLength": -1,
+//       "maxBodyLength": -1,
+//       "env": {},
+//       "headers": {
+//           "Accept": "application/json, text/plain, */*",
+//           "AuthToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqd3QiOiJ7XCJVc2VySWRcIjo0MzQzLFwiTG9naW5OYW1lXCI6XCJQbHVtbGlpbC5saUBlbGl0ZXNsYW5kLmNvbVwiLFwiVXNlck5hbWVcIjpcIuadjuWuh-ixqlwiLFwiVXNlck1haWxcIjpcIlBsdW1saWlsLmxpQGVsaXRlc2xhbmQuY29tXCIsXCJFbXBsb3llZUlkXCI6MjM4OCxcIlRva2VuQ3JlYXRlVGltZVwiOlwiMjAyNC0wMi0yNlQxMDozNToyMy4xMzAxODk0KzA4OjAwXCIsXCJVc2VyVHlwZVwiOjJ9IiwiZXhwIjoxNzExNTA2OTIzfQ.f6b-oNwlFTYpDeaZr1cRWeG3ZDil3KdljuLKmPjz2fQ",
+//           "Source": "1"
+//       },
+//       "baseURL": "",
+//       "method": "get",
+//       "responseType": "blob",
+//       "url": "/itemapi/Item/DownOnlyOfficeEditItem?libraryId=fe9bf1f9-22b4-4f53-b2e0-fa6f4384d16c&itemId=1b369ae5-0e2d-4b59-a771-bf11ca896719&OperateType=0"
+//   },
+//   "request": {}
+// }
+
+
+// /**
+//  * 下载文件
+//  * @param res 流
+//  */
+// const getloadFile = (res: { data: any; headers: any }, key: string) => {
+//   targetUriTransFlag.value = false
+//   const { data, headers } = res
+//   if (data.type === 'application/json') {
+//     // 将blob文件流转换成json
+//     const reader = new FileReader()
+//     reader.onload = function (event) {
+//       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+//       // @ts-expect-error
+//       const message = JSON.parse(reader.result).Message
+//       Toast({
+//         type: 'error',
+//         title: message,
+//         duration: 3000,
+//       })
+//     }
+//     reader.readAsText(data)
+//     targetUriTransFlag.value = true
+//     return false
+//   }
+//   const blob = new Blob([data], { type: headers['content-type'] })
+//   const url = window.URL.createObjectURL(blob)
+//   targetUri.value = url
+//   sessionStorage.setItem(key, url)
+// }
+// /**
+//  * 图片音频获取流后转blob地址
+//  * @param uri 流下载地址
+//  */
+// const getPreviewUrl = async (uri: string, key: string) => {
+//   viewerLoading.value = true
+//   services.getFilestremById(uri).then((res: any) => {
+//     getloadFile(res, key)
+//   }).finally(() => {
+//     viewerLoading.value = false
+//   })
+// }

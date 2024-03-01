@@ -9,6 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@codemirror/lang-javascript": "^6.2.2",
+    "@codemirror/theme-one-dark": "^6.1.2",
     "@idux/cdk": "^1.12.4",
     "@idux/components": "^1.12.4",
     "@idux/pro": "^1.12.4",
