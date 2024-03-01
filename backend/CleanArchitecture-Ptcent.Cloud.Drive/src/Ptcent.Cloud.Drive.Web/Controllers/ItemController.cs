@@ -50,8 +50,9 @@ namespace Ptcent.Cloud.Drive.Web.Controllers
         /// <param name="upLoadFileRequestDto"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ResponseMessageDto<bool>> BlockUpload([FromForm] UpLoadFileRequestDto upLoadFileRequestDto)
+        public async Task<ResponseMessageDto<bool>> BlockUpload()
         {
+            UpLoadFileRequestDto upLoadFileRequestDto = new UpLoadFileRequestDto { FormFiles = HttpContext.Request.Form.Files };
             return await mediator.Send(upLoadFileRequestDto);
         }
         /// <summary>

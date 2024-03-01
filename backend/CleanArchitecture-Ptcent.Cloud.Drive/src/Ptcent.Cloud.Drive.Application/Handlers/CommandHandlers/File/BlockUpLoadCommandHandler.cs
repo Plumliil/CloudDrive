@@ -56,27 +56,27 @@ namespace Ptcent.Cloud.Drive.Application.Handlers.CommandHandlers.File
                 response.Message = $"{excludeFileType}类型文件不允许上传";
                 return response;
             }
-
-
-         
             //获取文件名的
             // 查找下划线的索引
             foreach (var file in request.FormFiles)
             {
                 var fileName = Path.GetFileName(file.FileName);
-                int underscoreIndex = fileName.IndexOf('_');
+                int underscoreIndex = fileName.IndexOf('-');
                 string prefix = underscoreIndex != -1 ? fileName.Substring(0, underscoreIndex) : fileName;
                 //创建临时文件夹
                 string savePath = Path.Combine(ConfigUtil.GetValue("FileRootPath"), "TempFile", prefix);
-                savePath = savePath +"\\"+ prefix;
+                string filePath =savePath + Path.DirectorySeparatorChar + fileName;
                 //创建文件夹
-                if (Directory.Exists(savePath))
+                if (!Directory.Exists(savePath))
                 {
                     Directory.CreateDirectory(savePath);
                 }
-                using (var chunkFileStream = new FileStream(savePath,FileMode.Create, FileAccess.Write, FileShare.None, bufferSize: 81920, useAsync: true))
+                Stream stream = file.OpenReadStream();
+                using (var chunkFileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
                 {
-                   await file.CopyToAsync(chunkFileStream);
+                    // await file.CopyToAsync(chunkFileStream);
+                    stream.Seek(0, SeekOrigin.Begin);
+                    stream.CopyTo(chunkFileStream);
                 }
             }
             response.Message = "上传成功";

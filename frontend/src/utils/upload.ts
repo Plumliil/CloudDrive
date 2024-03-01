@@ -87,7 +87,7 @@ const uploadChunks = async (
   // 通过 map 循环生成了若干个，对象  对象里面有form
   // 循环发请求——每个请求上传一个分片内容
   // 要考虑浏览器并发问题——绝大部分浏览器的并发请求数量是 6 个
-  const max = 6; //这个并发 是要控制的
+  const max = 1; //这个并发 是要控制的
   let index = 0;
   let taskPool: Array<Promise<any>> = []; // 任务执行池
   while (index < requests.length) {
