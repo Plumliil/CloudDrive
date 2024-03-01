@@ -1,3 +1,5 @@
+import { itemapi } from '@/api'
+import { ResponseDataType } from '@/api/type'
 import requestHandler from '@/request'
 import { UploadRequestOption } from 'ant-design-vue/es/vc-upload/interface'
 import sparkMD5 from 'spark-md5'
@@ -5,6 +7,14 @@ interface Chunks {
   name: string,
   chunk: Blob //File 分片之后就是 blob
 }
+
+interface MergeRequest {
+  FileHash: string,
+  FileName: string,
+  ParentFloderId: number | null,
+  FileSize: number
+}
+
 const ChunkSize = 1024 * 1024 * 10 // 分片的大小
 //创建分片
 const createFileChunk = (file: File, hash: string, size = ChunkSize) => {
@@ -67,7 +77,7 @@ const uploadChunks = async (
   const requests = chunks.map((item) => {
     // 生成 formData
     const form = new FormData();
-    form.append("chunk", item.chunk, item.name); // 只能需要加入 name 为什么? 因为后端用了 eggjs
+    form.append("FormFiles", item.chunk, item.name); // 只能需要加入 name 为什么? 因为后端用了 eggjs
     // aggjs 直接内置了 multi-part 插件，直接会解析 formData 文件
     // 如果不穿name 后端回报 Invalid file name
     return {
@@ -81,7 +91,7 @@ const uploadChunks = async (
   let index = 0;
   let taskPool: Array<Promise<any>> = []; // 任务执行池
   while (index < requests.length) {
-    const task = requestHandler("/upload", "post", requests[index].form); // 这个一个认任务
+    const task = requestHandler(itemapi.uploadFile, "post", requests[index].form); // 这个一个认任务
     task.then(() => {
       // then 执行之后，意味着 请求已经完成， 将池子里面的任务移除掉
       taskPool.splice(taskPool.findIndex((i) => i === task));
@@ -98,9 +108,9 @@ const uploadChunks = async (
   // 发送合并请求了
   const file = params.file as File;
   const ext = file.name.substring(file.name.lastIndexOf(".") + 1); // 文件后缀，后面的扩展名
-  const { data } = await requestHandler("/mergeFile", "post", { hash, ext });
+  const mergeFileRes: ResponseDataType<any> = await requestHandler<ResponseDataType<any>, MergeRequest>(itemapi.mergeChunkFile, "post", { FileHash:hash,FileSize:file.size,FileName:file.name,ParentFloderId:null});
   if (params.onSuccess) {
-    params.onSuccess(data);
+    params.onSuccess(mergeFileRes);
   }
 };
 
