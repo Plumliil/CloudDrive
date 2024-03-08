@@ -48,8 +48,8 @@ export default defineConfig({
       //   rewrite: (path) => path.replace(/^\/CloudDrive/, ''),
       // },
       '/cloudapi': {
-        target: 'https://v5698k5455.vicp.fun/cloudapi',
-       // target: 'http://192.168.118.58:9010/cloudapi',
+       // target: 'https://v5698k5455.vicp.fun/cloudapi',
+        target: 'http://192.168.118.58:9010/cloudapi',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/cloudapi/, ''),
       },

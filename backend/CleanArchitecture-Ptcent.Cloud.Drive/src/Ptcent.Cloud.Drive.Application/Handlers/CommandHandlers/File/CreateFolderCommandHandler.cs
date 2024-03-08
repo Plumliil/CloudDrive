@@ -38,6 +38,7 @@ namespace Ptcent.Cloud.Drive.Application.Handlers.CommandHandlers.File
             fileEntity.VersionId = idGenerator.NewLong();
             fileEntity.LeafName = request.FolderName;
             fileEntity.FileSize = 0;
+            fileEntity.IsFolder = 1;
             fileEntity.Extension = string.Empty;
             fileEntity.FileType = (int)FileTypeEnum.Folder;
             fileEntity.IsDel = (int)FileStatsType.NoDel;

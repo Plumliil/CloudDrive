@@ -23,6 +23,7 @@ using Autofac.Extensions.DependencyInjection;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.Extensions.PlatformAbstractions;
+using Ptcent.Cloud.Drive.Application.MappingProfiles;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -105,6 +106,8 @@ builder.Services.AddSwaggerGen(options =>
     options.SwaggerDoc("v1", new OpenApiInfo { Title = "CloudDrive·þÎñWebApi", Version = "v1" });
     //options.OperationFilter<BinaryPayloadFilter>();
 });
+
+builder.Services.AddSingleton(AutoMapperConfig.GetMapperConfigs());
 
 //¿çÓò
 builder.Services.AddCors(option => option.AddPolicy("AllowCors", (_builder) =>

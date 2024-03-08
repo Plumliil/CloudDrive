@@ -33,7 +33,7 @@ namespace Ptcent.Cloud.Drive.Application.Handlers.CommandHandlers.User
                 response.Message = "手机号不能重复";
                 return response;
             }
-            var userEntity = AutoMapperConfig.Map<RegistrationAccountRequestDto, UserEntity>(request);
+            var userEntity = new UserEntity();// AutoMapperConfig.Map<RegistrationAccountRequestDto, UserEntity>(request);
             userEntity.Id = idGenerator.NewLong();
             userEntity.UpdateDate = DateTime.Now;
             userEntity.CreateDate = DateTime.Now;

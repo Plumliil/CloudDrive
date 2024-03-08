@@ -1,5 +1,5 @@
-﻿
-using MediatR;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
 using Ptcent.Cloud.Drive.Application.Dto.ReponseModels;
@@ -60,9 +60,13 @@ namespace Ptcent.Cloud.Drive.Web.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ResponseMessageDto<bool>> MergeChunkFile(MergeChunkFileRequestDto mergeChunkFileRequestDto)
-        {
-            return await mediator.Send(mergeChunkFileRequestDto);
-        }
+        public async Task<ResponseMessageDto<bool>> MergeChunkFile(MergeChunkFileRequestDto mergeChunkFileRequestDto) => await mediator.Send(mergeChunkFileRequestDto);
+        /// <summary>
+        /// 查询文件列表
+        /// </summary>
+        /// <param name="fileRequestDto"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<ResponseMessageDto<List<ItemResponseDto>>> GetFiles(FileRequestDto fileRequestDto) => await mediator.Send(fileRequestDto);
     }
 }
