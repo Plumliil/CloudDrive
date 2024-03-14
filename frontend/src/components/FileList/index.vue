@@ -6,12 +6,16 @@ import { useDragUploadv2 } from '@/hooks'
 import { FileDataType, FileDisplayPropsType } from '@/type';
 import { menusEvent } from 'vue3-menus';
 import { TableColumn, TableColumnSelectable, TablePagination } from '@idux/components/table'
+import { useFormControl } from '@idux/cdk';
+import { useMessage } from '@idux/components';
 const fileStore = useFileStoreWithOut()
 const curRightSelect = ref<any>()
 const curUploadKey = ref<number>(-1)
 const tableFileList = ref<File[]>([])
 const dragUploadVisible = ref<boolean>(false)
 const monseoverData = ref<FileDataType>()
+const renameRow = ref<number | string>()
+const message = useMessage()
 const props = withDefaults(defineProps<FileDisplayPropsType>(), {})
 const selectableColumn = reactive<TableColumnSelectable<FileDataType>>({
   type: 'selectable',
@@ -40,10 +44,10 @@ const pagination = reactive<TablePagination>({
 
 const columns = ref<TableColumn<FileDataType>[]>([
   selectableColumn,
-  ...(fileStore.columnsType.includes('name') ? [{
+  ...(fileStore.columnsType.includes('LeafName') ? [{
     title: '文件名',
-    dataKey: 'name',
-    customCell: 'name',
+    dataKey: 'LeafName',
+    customCell: 'LeafName',
   }] : []),
   ...(fileStore.columnsType.includes('type') ? [{
     title: '类型',
@@ -51,17 +55,17 @@ const columns = ref<TableColumn<FileDataType>[]>([
     width: 200,
     customCell: 'type',
   }] : []),
-  ...(fileStore.columnsType.includes('size') ? [{
+  ...(fileStore.columnsType.includes('FileSizeStr') ? [{
     title: '大小',
-    dataKey: 'size',
+    dataKey: 'FileSizeStr',
     width: 200,
-    customCell: 'size',
+    customCell: 'FileSizeStr',
   }] : []),
-  ...(fileStore.columnsType.includes('changeDate') ? [{
+  ...(fileStore.columnsType.includes('UpdatedDate') ? [{
     title: '修改日期',
-    dataKey: 'changeDate',
+    dataKey: 'UpdatedDate',
     width: 200,
-    customCell: 'changeDate',
+    customCell: 'UpdatedDate',
   }] : []),
   ...(fileStore.columnsType.includes('deleteDate') ? [{
     title: '删除日期',
@@ -102,7 +106,10 @@ const menus = shallowRef({
       label: "重命名",
       tip: '    ',
       click: () => {
-        props.renameHandle && props.renameHandle()
+        // props.renameHandle && props.renameHandle()
+        console.log('重命名', curRightSelect.value.key);
+        renameRow.value = curRightSelect.value.key
+        onEdit(curRightSelect.value, 'name')
       }
     },
     {
@@ -185,36 +192,88 @@ const goPreview = (record: FileDataType) => {
 
 }
 
+
+const editControl = useFormControl<string | number | undefined>(undefined)
+const validatorMap = {
+  name: [],
+}
+
+const onEdit = (record: any, type: 'name') => {
+  record.editable = type
+  editControl.setValue(record[type])
+  editControl.setValidators(validatorMap[type])
+}
+
+
+const cancleSaveNewName = () => {
+  console.log('cancleSaveNewName');
+  renameRow.value = -1
+}
+const saveNewName = (record: any, type: 'name' | 'age' | 'address') => {
+  if (editControl.valid.value) {
+    // 发起请求，成功后刷新数据, 最好只更新当前行的数据，
+    record[type] = editControl.getValue()
+    record.editable = undefined
+    message.success("重命名成功~")
+  } else {
+    editControl.markAsDirty()
+  }
+  renameRow.value = -1
+}
+onMounted(() => {
+  window.addEventListener('click', () => {
+    console.log(1111);
+  })
+})
+const emits=defineEmits(['setSelectedRow'])
+const setSelectedRow = (_: Event, record: any) => {
+  props.setSelectedRow&&props.setSelectedRow(record)
+}
 </script>
 
 <template>
+
   <IxSpace vertical class="pt-4" style="width: 98.6%;background-color: #fff;margin: 0 0.7%;margin-top: -10px;">
     <IxTable id="uploadTable" @dragover="dragoverHandle" @drop="dropHandle" v-model:selectedRowKeys="selectedRowKeys"
       :pagination="pagination" :columns="columns" :dataSource="props.dataSource">
       <template #name="{ record }">
-        <div @dragover="() => showUploadTip(record)" @drop="() => mouseoverHandle(record)"
-          class="flex justify-start items-center" @click.stop @contextmenu="(e) => rightClick(e, record)">
+        <div style="height: 100%;width: 100%;" @dragover="() => showUploadTip(record)"
+          @drop="() => mouseoverHandle(record)" class="flex justify-start items-center" @click.stop
+          @contextmenu="(e) => rightClick(e, record)" @click="(e) => setSelectedRow(e, record)">
           <IxImage :src="getFileIcon(`${record.name}.${record.type}`)" :preview="false" />
-          <IxButton mode="link" @click="() => goPreview(record)">{{ record.name }}</IxButton>
-          <span v-if="record.type === 'folder'"
+          <IxButton v-if="renameRow !== record.key" mode="link" @click="() => goPreview(record)">{{ record.name }}
+          </IxButton>
+          <IxFormItem v-if="record.editable === 'name' && renameRow === record.key" messageTooltip>
+            <IxInput :control="editControl">
+              <template #suffix>
+                <IxIcon class="cancle" name="close" @click="cancleSaveNewName" />
+                <IxIcon class="save" name="check" @click="saveNewName(record, 'name')" />
+              </template>
+            </IxInput>
+          </IxFormItem>
+          <span v-if="record.type === 'folder' && dragUploadVisible"
             :class="['pl-16', curUploadKey === record.key ? 'text-gray-400' : 'text-white']">上传到此处</span>
         </div>
       </template>
+
       <template #type="{ record }">
         <div class="p-2" @click.stop @contextmenu="(e) => rightClick(e, record)">{{ record.type
-        }}</div>
+          }}</div>
       </template>
+
       <template #size="{ record }">
         <div class="p-2" @click.stop @contextmenu="(e) => rightClick(e, record)">{{ record.size
-        }}</div>
+          }}</div>
       </template>
-      <template #changeDate="{ record }">
+
+      <!-- <template #changeDate="{ record }">
         <div class="p-2" @click.stop @contextmenu="(e) => rightClick(e, record)">{{
-          record.changeDate.join(',') }}</div>
-      </template>
+      record.changeDate.join(',') }}</div>
+      </template> -->
+
       <template #deleteDate="{ record }">
         <div class="p-2" @click.stop @contextmenu="(e) => rightClick(e, record)">{{
-          record.deleteDate.join(',') }}</div>
+      record.deleteDate.join(',') }}</div>
       </template>
     </IxTable>
     <IxModal v-model:visible="dragUploadVisible" header="文件上传" @ok="submitHandle" @close="cancelHandle"
@@ -249,5 +308,20 @@ const goPreview = (record: FileDataType) => {
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
+}
+
+.cancle {
+  padding: 3px;
+  font-weight: 900;
+  transition: .5s all;
+
+}
+
+.save {
+  padding: 3px;
+  font-size: 14px;
+  font-weight: 900;
+  transition: .5s all;
+
 }
 </style>

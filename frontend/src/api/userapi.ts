@@ -1,5 +1,5 @@
 import module from './module'
 export default {
-  login: module.user + '/Login',
-  registe: module.user + '/RegistrationAccount'
+  login: !import.meta.env.IS_NEST ? '/cloudapi/user/login' : module.user + '/Login',
+  registe: !import.meta.env.IS_NEST ? '/cloudapi/user/register' : module.user + '/RegistrationAccount'
 }

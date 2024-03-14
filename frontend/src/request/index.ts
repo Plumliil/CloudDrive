@@ -36,7 +36,7 @@ serviceAxios.interceptors.request.use(
 )
 serviceAxios.interceptors.response.use(
   (response: AxiosResponse) => {
-    if (response.status == 200) {
+    if (![400,401,403,405,408,500,501,502,503,504,505].includes(response.status)) {
       return response.data
     } else {
       return requestHandler
@@ -123,11 +123,24 @@ enum methodTypeMode {
 
 const requestHandler = <T, P>(url: string, method: methodType, paramsData?: P, config?: AxiosRequestConfig) => {
   if (method === methodTypeMode.get || method === methodTypeMode.delete) {
-    return RequestAxiosInstance<T, P>(url, method, { params: { ...paramsData } }, config)
+    return RequestAxiosInstance<T, P>(url, method, { params:  { ...paramsData } }, config)
   } else {
     return RequestAxiosInstance<T, P>(url, method, { data: paramsData }, config)
   }
 }
+export const get = <T, P>(url: string,  paramsData?: P, config?: AxiosRequestConfig) => {
+    return RequestAxiosInstance<T, P>(url, 'get', { data: paramsData }, config)
+}
+export const post = <T, P>(url: string,  paramsData?: P, config?: AxiosRequestConfig) => {
+    return RequestAxiosInstance<T, P>(url, 'post', { data: paramsData }, config)
+}
+export const del = <T, P>(url: string,  paramsData?: P, config?: AxiosRequestConfig) => {
+    return RequestAxiosInstance<T, P>(url, 'delete', { data: { ...paramsData } }, config)
+}
+export const put = <T, P>(url: string,  paramsData?: P, config?: AxiosRequestConfig) => {
+    return RequestAxiosInstance<T, P>(url, 'put', { data: { ...paramsData } }, config)
+}
+
+
 
 export default requestHandler
-

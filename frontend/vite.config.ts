@@ -42,13 +42,13 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
-      // '/CloudDrive': {
-      //   target: 'https://v5698k5455.vicp.fun/CloudDrive',
+      // '/cloudapi': {
+      //   target: 'http://192.168.118.58:9010/cloudapi',
       //   changeOrigin: true,
-      //   rewrite: (path) => path.replace(/^\/CloudDrive/, ''),
+      //   rewrite: (path) => path.replace(/^\/cloudapi/, ''),
       // },
       '/cloudapi': {
-        target: 'http://192.168.118.58:9010/cloudapi',
+        target: 'http://localhost:3000/',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/cloudapi/, ''),
       },

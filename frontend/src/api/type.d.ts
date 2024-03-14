@@ -2,18 +2,18 @@ export type ResponseDataType<T> = {
   Message: string,
   IsSuccess: boolean,
   Code: number,
-  TotalCount: number,
+  TotalCount?: number,
   Data: T | null
 }
 
 // itemapi
 export type CreateFolderRqType = {
   FolderName: string,
-  ParentFolderId: number
+  ParentFolderId: number| null
 }
 export type CreateFolderRpType = {
   FolderName: string,
-  ParentFolderId: number
+  ParentFolderId: number | null
 }
 
 export type GetFileRqType = {
@@ -34,6 +34,7 @@ export type GetFileRpType = {
   IsDel: number,
   CreatedDate: string,
   FileSize: number
+  [key as string]:any
 }
 // userapi
 export type LoginRqType = {

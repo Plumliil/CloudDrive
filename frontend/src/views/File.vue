@@ -200,10 +200,92 @@ const fileData: FileDataType[] = [
     deleteDate: ['2025-09-15']
   }
 ];
+const fileData1 = [
+  {
+    "LeafName": "测试文件夹",
+    "Extension": "",
+    "FileSizeStr": "0B",
+    "FileSize": 0,
+    "UpdatedDate": "2024-03-01 16:19:19",
+    "DeletedDate": null
+  },
+  {
+    "LeafName": "画画记.mov",
+    "Extension": ".mov",
+    "FileSizeStr": "98.2M",
+    "FileSize": 102978230,
+    "UpdatedDate": "2024-03-01 16:41:40",
+    "DeletedDate": null
+  },
+  {
+    "LeafName": "图解经典015-图解山海经.pdf",
+    "Extension": ".pdf",
+    "FileSizeStr": "101.2M",
+    "FileSize": 106147271,
+    "UpdatedDate": "2024-03-01 16:40:25",
+    "DeletedDate": null
+  },
+  {
+    "LeafName": "图解HTTP.pdf",
+    "Extension": ".pdf",
+    "FileSizeStr": "13.1M",
+    "FileSize": 13753298,
+    "UpdatedDate": "2024-03-01 16:40:01",
+    "DeletedDate": null
+  },
+  {
+    "LeafName": "V1_泰睿思ISO文控管理PRD.pdf",
+    "Extension": ".pdf",
+    "FileSizeStr": "6.3M",
+    "FileSize": 6553784,
+    "UpdatedDate": "2024-03-01 16:39:03",
+    "DeletedDate": null
+  },
+  {
+    "LeafName": "Git提交命令.png",
+    "Extension": ".png",
+    "FileSizeStr": "32.9KB",
+    "FileSize": 33721,
+    "UpdatedDate": "2024-03-01 15:59:09",
+    "DeletedDate": null
+  },
+  {
+    "LeafName": "你必须知道的.NET.pdf",
+    "Extension": ".pdf",
+    "FileSizeStr": "4.6M",
+    "FileSize": 4815162,
+    "UpdatedDate": "2024-03-01 15:41:20",
+    "DeletedDate": null
+  },
+  {
+    "LeafName": "LOGO.png",
+    "Extension": ".png",
+    "FileSizeStr": "31.4KB",
+    "FileSize": 32197,
+    "UpdatedDate": "2024-03-01 14:50:17",
+    "DeletedDate": null
+  },
+  {
+    "LeafName": "logo.svg",
+    "Extension": ".svg",
+    "FileSizeStr": "41.4KB",
+    "FileSize": 42414,
+    "UpdatedDate": "2024-03-01 14:41:12",
+    "DeletedDate": null
+  },
+  {
+    "LeafName": "20231212154130.webm",
+    "Extension": ".webm",
+    "FileSizeStr": "23.5M",
+    "FileSize": 24664848,
+    "UpdatedDate": "2024-03-01 13:47:31",
+    "DeletedDate": null
+  }
+]
 import { Validators, useFormGroup } from '@idux/cdk/forms'
 import { TreeNode } from '@idux/components/tree/src/types'
 import requestHandler from '@/request'
-import { GetFileRpType, GetFileRqType } from '@/api/type'
+import { CreateFolderRqType, GetFileRpType, GetFileRqType, ResponseDataType } from '@/api/type'
 
 const { required } = Validators
 
@@ -229,7 +311,7 @@ const visible = ref(false) // Display column visible
 const createFileVisible = ref<boolean>(false)
 const uploadFileVisible = ref<boolean>(false)
 const shareFileVisible = ref<boolean>(false)
-const dataSource = ref<FileDataType[]>(fileData)
+const dataSource = ref<FileDataType[] | null>([])
 const activeRouteType = ref<LocationQueryValue | LocationQueryValue[] | FileType>(fileStore.displayType)
 const rootMenuSubKeys: VKey[] = ['mine', 'recycle', 'share']
 const expandedKeys = ref<VKey[]>(['mine'])
@@ -238,7 +320,8 @@ const selectKeys = ref<any[]>([])
 const selectRows = ref<any[]>([])
 const selectBtnFlag = computed(() => selectKeys.value.length > 0)
 const { confirm } = useModal()
-
+const showRightFileDetailFlag = ref<boolean>(false) // 展示右侧详情
+const rightFileDetailInfo = ref<any>()
 
 const onExpandedChange = (keys: VKey[]) => {
   const lastExpandedKey = keys.find(key => !expandedKeys.value.includes(key))
@@ -345,7 +428,7 @@ onMounted(async () => {
     PageIndex: 1,
     PageSize: 10
   });
-  console.log('IsSuccess, Data, Message ', { IsSuccess, Data, Message });
+  dataSource.value = IsSuccess ? Data : []
 
 })
 
@@ -373,10 +456,12 @@ const curSelectFolder = ref<VKey | undefined>()
 const createFolderVisibleChange = (flag: boolean) => {
   createFolderVisible.value = flag
 }
-const okcreateFolderHandle = () => {
+const okcreateFolderHandle = async () => {
   if (!folderCreateForm.valid.value) {
     return message.info('请填写文件夹名称!')
   } else {
+    const createFolderRes: ResponseDataType<any> = await requestHandler<ResponseDataType<boolean>, CreateFolderRqType>(itemapi.createFolder, "post", { FolderName: folderCreateForm.getValue().folderName, ParentFolderId: null });
+    console.log('createFolderRes', createFolderRes);
     createFolderVisibleChange(false)
     setTimeout(() => {
       folderCreateForm.reset()
@@ -473,13 +558,26 @@ const uploadButtons: MenuData[] = [
 const uploadHandle = (options: MenuClickOptions) => {
   console.log('options', options);
 }
+const clickMenuHandle = () => {
+  console.log(111);
+}
+
+const showRightFileDetailFn = (flag: boolean) => {
+  showRightFileDetailFlag.value = flag
+}
+
+const setSelectedRow = (record: any) => {
+  showRightFileDetailFlag.value = true
+  rightFileDetailInfo.value = record
+}
 
 </script>
 <template>
   <IxLayout id="container" class="m-0 p-0">
     <IxLayoutSider v-if="fileStore.siderState === 'show'"
       class="left-content flex flex-col justify-between bg-white m-0 p-0">
-      <IxMenu :expandedKeys="expandedKeys" @update:expandedKeys="onExpandedChange" mode="inline" :dataSource="menuData">
+      <IxMenu @onClick="clickMenuHandle" :expandedKeys="expandedKeys" @update:expandedKeys="onExpandedChange"
+        mode="inline" :dataSource="menuData">
         <template #itemLabel="item">
           <router-link :to="item.key">
             <span>{{ item.label }}</span>
@@ -500,26 +598,27 @@ const uploadHandle = (options: MenuClickOptions) => {
       <IxIcon style="background-color: #EEEEEE;" v-else @click="siderShowHandle(true)" name="expand"
         class="py-8 text-black rounded-md rounded-tl-none rounded-bl-none" />
     </div>
+
     <IxLayoutContent class="right-content p-0 m-0 flex-1">
       <IxRow class="mx-3 mt-3 p-2 flex justify-center items-center">
         <IxCol class="flex justify-start" :span="12">
           <IxBreadcrumb>
             <IxBreadcrumbItem>
-              巴黎
+              1
             </IxBreadcrumbItem>
             <IxBreadcrumbItem>
-              北京
+              2
             </IxBreadcrumbItem>
             <IxBreadcrumbItem>
-              热情的岛屿
+              3
             </IxBreadcrumbItem>
             <IxBreadcrumbItem>
-              土耳其
+              4
             </IxBreadcrumbItem>
           </IxBreadcrumb>
         </IxCol>
         <IxCol style="display: flex;;justify-content: flex-end;" :span="12">
-          <IxSpace align="center" class="overflow-x-auto pr-4">
+          <IxSpace align="center" style="min-width: 430px;" class="overflow-x-auto pr-4">
             <IxDropdown v-model:visible="uploadFileVisible" trigger="click">
               <IxButton mode="primary">
                 上传
@@ -544,7 +643,7 @@ const uploadHandle = (options: MenuClickOptions) => {
             </IxDropdown>
             <IxButton v-if="selectBtnFlag" mode="primary" @click="moveFileVisibleChange(true)">移动文件</IxButton>
           </IxSpace>
-          <IxSpace align="center">
+          <IxSpace align="center" style="min-width: 276px;">
             <IxInput v-model:value="searchValue">
               <template #addonBefore class="bg-none">
                 <IxIcon name="search" />
@@ -579,61 +678,80 @@ const uploadHandle = (options: MenuClickOptions) => {
           </IxSpace>
         </IxCol>
       </IxRow>
-      <FileTable ref="tableRef" :setSelectData="setSelectData" v-if="fileStore.displayType === 'table'"
-        :type="activeRouteType" :dataSource="dataSource" />
-      <FileList ref="listRef" :setSelectData="setSelectData" :move-handle="() => moveFileVisibleChange(true)"
-        :delete-handle="() => deleteFileHandle()" :rename-handle="() => renameVisibleChange(true)"
-        :share-handle="() => shareFileVisibleChange(true)" :key="fileStore.columnsType.join(',')"
-        v-else-if="fileStore.displayType === 'list'" :type="activeRouteType" :dataSource="dataSource" />
-      <TimeLine v-else-if="fileStore.displayType === 'timeLine'" :type="activeRouteType" :dataSource="dataSource" />
-      <IxModal :destroyOnHide="true" :visible="createFolderVisible" @ok="okcreateFolderHandle" header="新建文件夹"
-        @cancel="createFolderVisibleChange(false)" @close="createFolderVisibleChange(false)" :centered="false"
-        :width="400">
-        <IxForm :control="folderCreateForm">
-          <IxFormItem label="文件夹名" required>
-            <IxInput control="folderName"></IxInput>
-          </IxFormItem>
-        </IxForm>
-      </IxModal>
-      <IxModal :destroyOnHide="true" :visible="renameVisible" @ok="okrenameHandle" header="文件重命名"
-        @cancel="renameVisibleChange(false)" @close="renameVisibleChange(false)" :centered="false" :width="400">
-        <IxForm :control="renameFileForm">
-          <IxFormItem label="文件名" required>
-            <IxInput control="newName"></IxInput>
-          </IxFormItem>
-        </IxForm>
-      </IxModal>
-      <IxModal :destroyOnHide="true" :visible="shareFileVisible" @ok="okShareFileHandle" header="文件分享"
-        @cancel="shareFileVisibleChange(false)" @close="shareFileVisibleChange(false)" :centered="false" :width="400">
-        <IxForm :control="folderShareForm">
-          <IxFormItem label="链接有效期至" required>
-            <IxDatePicker control="validityData" type="datetime" clearable></IxDatePicker>
-          </IxFormItem>
-          <IxFormItem label="是否需要提取码">
-            <IxRadioGroup control="shouldCode">
-              <IxRadio value="y">是</IxRadio>
-              <IxRadio value="n">否</IxRadio>
-            </IxRadioGroup>
-          </IxFormItem>
-          <IxFormItem v-if="folderShareForm.valueRef.value.shouldCode === 'y'" label="提取码" required>
-            <IxInput control="password"></IxInput>
-          </IxFormItem>
-        </IxForm>
-      </IxModal>
-      <IxModal :destroyOnHide="true" :visible="moveFileVisible" @ok="okMoveFileHandle" header="移动文件"
-        @cancel="moveFileVisibleChange(false)" @close="moveFileVisibleChange(false)" :centered="false" :width="600">
-        <div style="height: 400px; overflow-y: scroll;">
-          <IxProTree :style="{ height: '400px' }" :height="321" :dataSource="folderList" @nodeClick="selectTargetFolder">
-            <template #suffix>
-              <IxSpace>
-                <IxIcon name="plus" @click="createFolderVisibleChange(true)" />
-              </IxSpace>
-            </template>
-          </IxProTree>
-        </div>
-      </IxModal>
+      <div class="flex">
+        <FileTable ref="tableRef" :setSelectData="setSelectData" v-if="fileStore.displayType === 'table'"
+          :type="activeRouteType" :dataSource="dataSource" :setSelectedRow="setSelectedRow" />
+        <FileList :setSelectedRow="setSelectedRow" ref="listRef" :setSelectData="setSelectData"
+          :move-handle="() => moveFileVisibleChange(true)" :delete-handle="() => deleteFileHandle()"
+          :rename-handle="() => renameVisibleChange(true)" :share-handle="() => shareFileVisibleChange(true)"
+          :key="fileStore.columnsType.join(',')" v-else-if="fileStore.displayType === 'list'" :type="activeRouteType"
+          :dataSource="dataSource" />
+        <TimeLine :setSelectedRow="setSelectedRow" v-else-if="fileStore.displayType === 'timeLine'"
+          :type="activeRouteType" :dataSource="dataSource" />
+        <IxCard v-if="showRightFileDetailFlag" borderless
+          :header="{ title: '文件详情', suffix: 'double-right', onSuffixClick: () => showRightFileDetailFn(false) }"
+          style="width: 360px;">
+          {{ rightFileDetailInfo }}
+          <IxDesc header="单列数据" col="1" labelWidth="56px">
+            <IxDescItem label="策略名称">保障网络会议</IxDescItem>
+            <IxDescItem label="状态">禁用</IxDescItem>
+            <IxDescItem label="操作人">saas</IxDescItem>
+            <IxDescItem label="描述信息">优先保证网络会议带宽的使用</IxDescItem>
+            <IxDescItem label="优先级">高</IxDescItem>
+            <IxDescItem label="更新时间">2022-02-20 16:29</IxDescItem>
+          </IxDesc>
+          <IxEmpty description="选中文件/文件夹，查看详情" />
+        </IxCard>
+        <IxIcon class="hover:color-#74ABFF" style="margin-top: 15px;padding-right:10px;font-size: 16px;cursor: pointer;"
+          v-if="!showRightFileDetailFlag" @click="() => showRightFileDetailFn(true)" name="double-left" />
+      </div>
     </IxLayoutContent>
   </IxLayout>
+  <IxModal :destroyOnHide="true" :visible="createFolderVisible" @ok="okcreateFolderHandle" header="新建文件夹"
+    @cancel="createFolderVisibleChange(false)" @close="createFolderVisibleChange(false)" :centered="false" :width="400">
+    <IxForm :control="folderCreateForm">
+      <IxFormItem label="文件夹名" required>
+        <IxInput control="folderName"></IxInput>
+      </IxFormItem>
+    </IxForm>
+  </IxModal>
+  <IxModal :destroyOnHide="true" :visible="renameVisible" @ok="okrenameHandle" header="文件重命名"
+    @cancel="renameVisibleChange(false)" @close="renameVisibleChange(false)" :centered="false" :width="400">
+    <IxForm :control="renameFileForm">
+      <IxFormItem label="文件名" required>
+        <IxInput control="newName"></IxInput>
+      </IxFormItem>
+    </IxForm>
+  </IxModal>
+  <IxModal :destroyOnHide="true" :visible="shareFileVisible" @ok="okShareFileHandle" header="文件分享"
+    @cancel="shareFileVisibleChange(false)" @close="shareFileVisibleChange(false)" :centered="false" :width="400">
+    <IxForm :control="folderShareForm">
+      <IxFormItem label="链接有效期至" required>
+        <IxDatePicker control="validityData" type="datetime" clearable></IxDatePicker>
+      </IxFormItem>
+      <IxFormItem label="是否需要提取码">
+        <IxRadioGroup control="shouldCode">
+          <IxRadio value="y">是</IxRadio>
+          <IxRadio value="n">否</IxRadio>
+        </IxRadioGroup>
+      </IxFormItem>
+      <IxFormItem v-if="folderShareForm.valueRef.value.shouldCode === 'y'" label="提取码" required>
+        <IxInput control="password"></IxInput>
+      </IxFormItem>
+    </IxForm>
+  </IxModal>
+  <IxModal :destroyOnHide="true" :visible="moveFileVisible" @ok="okMoveFileHandle" header="移动文件"
+    @cancel="moveFileVisibleChange(false)" @close="moveFileVisibleChange(false)" :centered="false" :width="600">
+    <div style="height: 400px; overflow-y: scroll;">
+      <IxProTree :style="{ height: '400px' }" :height="321" :dataSource="folderList" @nodeClick="selectTargetFolder">
+        <template #suffix>
+          <IxSpace>
+            <IxIcon name="plus" @click="createFolderVisibleChange(true)" />
+          </IxSpace>
+        </template>
+      </IxProTree>
+    </div>
+  </IxModal>
 </template>
 
 <style scoped>

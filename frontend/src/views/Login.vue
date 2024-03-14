@@ -2,7 +2,7 @@
 import { useUserStoreWithOut } from '@/store';
 import { useMessage } from '@idux/components/message'
 import { Validators, useFormGroup } from '@idux/cdk/forms'
-import requestHandler from '@/request';
+import requestHandler, { post } from '@/request';
 import { userapi } from '@/api'
 import router from '@/router';
 import { jwtDecode } from "jwt-decode";
@@ -26,26 +26,18 @@ const formGroup = useFormGroup({
 })
 
 const login = async () => {
-  const { IsSuccess, Data, Message } = await requestHandler<string, LoginRqType>(userapi.login, "post", formGroup.getValue());
+  const { IsSuccess, Data, Message } = await post<string, LoginRqType>(userapi.login, formGroup.getValue());
   if (!IsSuccess && !Data) return message.error(Message)
   message.success("登录成功")
   const decode: JWT_Type = jwtDecode(Data as string);
   LocalStorageCache.setItem('Authorization', Data)
-  // LocalStorageCache.setItem('Authorization', 'Data')
   userStore.changeState({
     key: 'isLogin',
     value: true
   })
   userStore.changeState({
     key: 'userInfo',
-    value: JSON.parse(decode.jwt)
-    // value: {
-    //   "UserId": "1111",
-    //   "UserName": "Admin_Li",
-    //   "Phone": "13211321110",
-    //   "UserMail": "admin_li@gmail.com",
-    //   "TokenCreateTime": "13211321110"
-    // }
+    value: import.meta.env.VITE_IS_NEST ? decode : JSON.parse(decode.jwt)
   })
   router.replace('/')
 }

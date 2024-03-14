@@ -18,6 +18,7 @@ export type FileDisplayPropsType = {
   deleteHandle?: () => void
   renameHandle?: () => void
   downHandle?: () => void
+  setSelectedRow:(record:any)=>void
 }
 
 
