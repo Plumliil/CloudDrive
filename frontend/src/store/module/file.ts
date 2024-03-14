@@ -7,7 +7,13 @@ const useFileStore = defineStore({
   persist: true,
   state: (): FileStoreType => ({
     displayType: 'list',
-    columnsType: ['name', 'type', 'size', 'changeDate', 'deleteDate'],
+    columnsType: [
+      "LeafName",
+      "FileType",
+      "CreatedDate",
+      "FileSize",
+      "UpdatedDate"
+  ],
     routeType: 'other',
     siderState: 'show'
   }),

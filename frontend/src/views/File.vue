@@ -14,277 +14,9 @@ import { folderList } from '@/mock'
 import { useModal } from '@idux/components/modal'
 import { itemapi } from '@/api'
 
-const fileData: FileDataType[] = [
-  {
-    key: 0,
-    name: '文件夹',
-    type: 'folder',
-    size: '1024 KB',
-    deleteDate: ['2023-01-01', '2023-02-15'],
-    changeDate: ['2023-01-01', '2023-02-15']
-  },
-  {
-    key: 1,
-    name: 'Document1',
-    type: 'doc',
-    size: '1024 KB',
-    deleteDate: ['2023-01-01', '2023-02-15'],
-    changeDate: ['2023-01-01', '2023-02-15']
-  },
-  {
-    key: 2,
-    name: 'Image1',
-    type: 'jpg',
-    size: '2048 KB',
-    deleteDate: ['2023-03-10'],
-    changeDate: ['2023-03-10']
-  },
-  {
-    key: 3,
-    name: 'Spreadsheet1',
-    type: 'xlsx',
-    size: '512 KB',
-    deleteDate: ['2023-05-20'],
-    changeDate: ['2023-05-20']
-  },
-  {
-    key: 4,
-    name: 'Video1',
-    type: 'mp4',
-    size: '4096 KB',
-    deleteDate: ['2023-07-08'],
-    changeDate: ['2023-07-08']
-  },
-  {
-    key: 5,
-    name: 'Presentation1',
-    type: 'ppt',
-    size: '3072 KB',
-    deleteDate: ['2023-09-15'],
-    changeDate: ['2023-09-15']
-  },
-  {
-    key: 6,
-    name: 'CodeFile1',
-    type: 'ts',
-    size: '256 KB',
-    deleteDate: ['2023-11-01'],
-    changeDate: ['2023-11-01']
-  },
-  {
-    key: 7,
-    name: 'Document2',
-    type: 'doc',
-    size: '1024 KB',
-    deleteDate: ['2023-01-01', '2023-02-15'],
-    changeDate: ['2023-01-01', '2023-02-15']
-  },
-  {
-    key: 8,
-    name: 'Image2',
-    type: 'jpg',
-    size: '2048 KB',
-    deleteDate: ['2023-03-10'],
-    changeDate: ['2023-03-10']
-  },
-  {
-    key: 9,
-    name: 'Spreadsheet2',
-    type: 'xlsx',
-    size: '512 KB',
-    deleteDate: ['2023-05-20'],
-    changeDate: ['2023-05-20']
-  },
-  {
-    key: 10,
-    name: 'Video2',
-    type: 'mp4',
-    size: '4096 KB',
-    deleteDate: ['2023-07-08'],
-    changeDate: ['2023-07-08']
-  },
-  {
-    key: 11,
-    name: 'Presentation2',
-    type: 'ppt',
-    size: '3072 KB',
-    deleteDate: ['2023-09-15'],
-    changeDate: ['2023-09-15']
-  },
-  {
-    key: 12,
-    name: 'CodeFile2',
-    type: 'ts',
-    size: '256 KB',
-    deleteDate: ['2023-11-01'],
-    changeDate: ['2023-11-01']
-  },
-  {
-    key: 33,
-    name: 'Spreadsheet17',
-    type: 'xlsx',
-    size: '512 KB',
-    changeDate: ['2024-05-20'],
-    deleteDate: ['2024-03-10']
-  },
-  {
-    key: 34,
-    name: 'Video17',
-    type: 'mp4',
-    size: '4096 KB',
-    changeDate: ['2024-07-08'],
-    deleteDate: ['2024-05-20']
-  },
-  {
-    key: 35,
-    name: 'Presentation17',
-    type: 'ppt',
-    size: '3072 KB',
-    changeDate: ['2024-09-15'],
-    deleteDate: ['2024-07-08']
-  },
-  {
-    key: 36,
-    name: 'CodeFile17',
-    type: 'ts',
-    size: '256 KB',
-    changeDate: ['2024-11-01'],
-    deleteDate: ['2024-09-15']
-  },
-  {
-    key: 37,
-    name: 'Document18',
-    type: 'doc',
-    size: '1024 KB',
-    changeDate: ['2025-01-01', '2025-02-15'],
-    deleteDate: ['2025-03-10', '2025-04-20']
-  },
-  {
-    key: 38,
-    name: 'Image18',
-    type: 'jpg',
-    size: '2048 KB',
-    changeDate: ['2025-03-10'],
-    deleteDate: ['2025-01-01', '2025-02-15']
-  },
-  {
-    key: 39,
-    name: 'Spreadsheet18',
-    type: 'xlsx',
-    size: '512 KB',
-    changeDate: ['2025-05-20'],
-    deleteDate: ['2025-03-10']
-  },
-  {
-    key: 40,
-    name: 'Video18',
-    type: 'mp4',
-    size: '4096 KB',
-    changeDate: ['2025-07-08'],
-    deleteDate: ['2025-05-20']
-  },
-  {
-    key: 41,
-    name: 'Presentation18',
-    type: 'ppt',
-    size: '3072 KB',
-    changeDate: ['2025-09-15'],
-    deleteDate: ['2025-07-08']
-  },
-  {
-    key: 42,
-    name: 'CodeFile18',
-    type: 'ts',
-    size: '256 KB',
-    changeDate: ['2025-11-01'],
-    deleteDate: ['2025-09-15']
-  }
-];
-const fileData1 = [
-  {
-    "LeafName": "测试文件夹",
-    "Extension": "",
-    "FileSizeStr": "0B",
-    "FileSize": 0,
-    "UpdatedDate": "2024-03-01 16:19:19",
-    "DeletedDate": null
-  },
-  {
-    "LeafName": "画画记.mov",
-    "Extension": ".mov",
-    "FileSizeStr": "98.2M",
-    "FileSize": 102978230,
-    "UpdatedDate": "2024-03-01 16:41:40",
-    "DeletedDate": null
-  },
-  {
-    "LeafName": "图解经典015-图解山海经.pdf",
-    "Extension": ".pdf",
-    "FileSizeStr": "101.2M",
-    "FileSize": 106147271,
-    "UpdatedDate": "2024-03-01 16:40:25",
-    "DeletedDate": null
-  },
-  {
-    "LeafName": "图解HTTP.pdf",
-    "Extension": ".pdf",
-    "FileSizeStr": "13.1M",
-    "FileSize": 13753298,
-    "UpdatedDate": "2024-03-01 16:40:01",
-    "DeletedDate": null
-  },
-  {
-    "LeafName": "V1_泰睿思ISO文控管理PRD.pdf",
-    "Extension": ".pdf",
-    "FileSizeStr": "6.3M",
-    "FileSize": 6553784,
-    "UpdatedDate": "2024-03-01 16:39:03",
-    "DeletedDate": null
-  },
-  {
-    "LeafName": "Git提交命令.png",
-    "Extension": ".png",
-    "FileSizeStr": "32.9KB",
-    "FileSize": 33721,
-    "UpdatedDate": "2024-03-01 15:59:09",
-    "DeletedDate": null
-  },
-  {
-    "LeafName": "你必须知道的.NET.pdf",
-    "Extension": ".pdf",
-    "FileSizeStr": "4.6M",
-    "FileSize": 4815162,
-    "UpdatedDate": "2024-03-01 15:41:20",
-    "DeletedDate": null
-  },
-  {
-    "LeafName": "LOGO.png",
-    "Extension": ".png",
-    "FileSizeStr": "31.4KB",
-    "FileSize": 32197,
-    "UpdatedDate": "2024-03-01 14:50:17",
-    "DeletedDate": null
-  },
-  {
-    "LeafName": "logo.svg",
-    "Extension": ".svg",
-    "FileSizeStr": "41.4KB",
-    "FileSize": 42414,
-    "UpdatedDate": "2024-03-01 14:41:12",
-    "DeletedDate": null
-  },
-  {
-    "LeafName": "20231212154130.webm",
-    "Extension": ".webm",
-    "FileSizeStr": "23.5M",
-    "FileSize": 24664848,
-    "UpdatedDate": "2024-03-01 13:47:31",
-    "DeletedDate": null
-  }
-]
 import { Validators, useFormGroup } from '@idux/cdk/forms'
 import { TreeNode } from '@idux/components/tree/src/types'
-import requestHandler from '@/request'
+import requestHandler, { get, post } from '@/request'
 import { CreateFolderRqType, GetFileRpType, GetFileRqType, ResponseDataType } from '@/api/type'
 
 const { required } = Validators
@@ -321,7 +53,7 @@ const selectRows = ref<any[]>([])
 const selectBtnFlag = computed(() => selectKeys.value.length > 0)
 const { confirm } = useModal()
 const showRightFileDetailFlag = ref<boolean>(false) // 展示右侧详情
-const rightFileDetailInfo = ref<any>()
+const rightFileDetailInfo = ref<FileDataType>()
 
 const onExpandedChange = (keys: VKey[]) => {
   const lastExpandedKey = keys.find(key => !expandedKeys.value.includes(key))
@@ -374,11 +106,11 @@ watch(() => route.query.type, (n, o) => {
 const columnsTypes = ref<ColumnType[]>(fileStore.columnsType)
 
 const columnsTypesData: CheckboxData[] = [
-  { key: 'name', label: '文件名', disabled: true },
-  { key: 'type', label: '类型' },
-  { key: 'size', label: '大小' },
-  { key: 'changeDate', label: '修改日期' },
-  { key: 'deleteDate', label: '删除日期' },
+  { key: 'LeafName', label: '文件名', disabled: true },
+  { key: 'FileType', label: '类型' },
+  { key: 'FileSize', label: '大小' },
+  { key: 'CreatedDate', label: '创建日期' },
+  { key: 'ChangeDate', label: '修改日期' },
 ]
 
 const dragControllerDiv = () => {
@@ -420,16 +152,18 @@ const dragControllerDiv = () => {
     return false
   }
 }
-
-onMounted(async () => {
-  dragControllerDiv()
-  const { IsSuccess, Data, Message } = await requestHandler<GetFileRpType[], GetFileRqType>(itemapi.getFiles, "post", {
-    FileType: 'All',
-    PageIndex: 1,
-    PageSize: 10
+const getData = async (type: 'All' | 'Image' | 'Docs' | 'Video' | 'Audio' | 'Other', PageIndex: number, PageSize = 10) => {
+  const { IsSuccess, Data, Message } = await get<GetFileRpType[], GetFileRqType>(itemapi.getFiles, {
+    FileType: type,
+    PageIndex: PageIndex,
+    PageSize: PageSize
   });
   dataSource.value = IsSuccess ? Data : []
-
+  !IsSuccess && message.error(Message)
+}
+onMounted(async () => {
+  dragControllerDiv()
+  getData('All', 1)
 })
 
 const siderShowHandle = (flag: boolean) => {
@@ -558,8 +292,35 @@ const uploadButtons: MenuData[] = [
 const uploadHandle = (options: MenuClickOptions) => {
   console.log('options', options);
 }
-const clickMenuHandle = () => {
-  console.log(111);
+const clickMenuHandle = (options: MenuClickOptions) => {
+
+  switch (options.key) {
+    case '/file?type=all':
+      getData('All', 1)
+      break;
+    case '/file?type=image':
+      getData('Image', 1)
+      break;
+    case '/file?type=docs':
+      getData('Docs', 1)
+      break;
+    case '/file?type=video':
+      getData('Video', 1)
+      break;
+    case '/file?type=audio':
+      getData('Audio', 1)
+      break;
+    case '/file?type=other':
+      getData('Other', 1)
+      break;
+    // case '/file?type=recycle':
+    //   getData('Recycle', 1)
+    //   break;
+    // case '/file?type=share':
+    //   getData('Share', 1)
+    //   break;
+  }
+  // /file?type=all
 }
 
 const showRightFileDetailFn = (flag: boolean) => {
@@ -576,7 +337,7 @@ const setSelectedRow = (record: any) => {
   <IxLayout id="container" class="m-0 p-0">
     <IxLayoutSider v-if="fileStore.siderState === 'show'"
       class="left-content flex flex-col justify-between bg-white m-0 p-0">
-      <IxMenu @onClick="clickMenuHandle" :expandedKeys="expandedKeys" @update:expandedKeys="onExpandedChange"
+      <IxMenu @click="clickMenuHandle" :expandedKeys="expandedKeys" @update:expandedKeys="onExpandedChange"
         mode="inline" :dataSource="menuData">
         <template #itemLabel="item">
           <router-link :to="item.key">
@@ -618,7 +379,7 @@ const setSelectedRow = (record: any) => {
           </IxBreadcrumb>
         </IxCol>
         <IxCol style="display: flex;;justify-content: flex-end;" :span="12">
-          <IxSpace align="center" style="min-width: 430px;" class="overflow-x-auto pr-4">
+          <IxSpace style="min-width: 430px;justify-content: end;" class="flex overflow-x-auto pr-4 bg-red">
             <IxDropdown v-model:visible="uploadFileVisible" trigger="click">
               <IxButton mode="primary">
                 上传
@@ -678,29 +439,28 @@ const setSelectedRow = (record: any) => {
           </IxSpace>
         </IxCol>
       </IxRow>
-      <div class="flex">
-        <FileTable ref="tableRef" :setSelectData="setSelectData" v-if="fileStore.displayType === 'table'"
+      <div class="flex mt-3">
+        <FileList ref="tableRef" :setSelectData="setSelectData" v-if="fileStore.displayType === 'table'"
           :type="activeRouteType" :dataSource="dataSource" :setSelectedRow="setSelectedRow" />
-        <FileList :setSelectedRow="setSelectedRow" ref="listRef" :setSelectData="setSelectData"
+        <FileTable :setSelectedRow="setSelectedRow" ref="listRef" :setSelectData="setSelectData"
           :move-handle="() => moveFileVisibleChange(true)" :delete-handle="() => deleteFileHandle()"
           :rename-handle="() => renameVisibleChange(true)" :share-handle="() => shareFileVisibleChange(true)"
           :key="fileStore.columnsType.join(',')" v-else-if="fileStore.displayType === 'list'" :type="activeRouteType"
-          :dataSource="dataSource" />
+          :dataSource="dataSource || []" />
         <TimeLine :setSelectedRow="setSelectedRow" v-else-if="fileStore.displayType === 'timeLine'"
-          :type="activeRouteType" :dataSource="dataSource" />
+          :type="activeRouteType" :dataSource="dataSource || []" />
         <IxCard v-if="showRightFileDetailFlag" borderless
           :header="{ title: '文件详情', suffix: 'double-right', onSuffixClick: () => showRightFileDetailFn(false) }"
           style="width: 360px;">
-          {{ rightFileDetailInfo }}
-          <IxDesc header="单列数据" col="1" labelWidth="56px">
-            <IxDescItem label="策略名称">保障网络会议</IxDescItem>
-            <IxDescItem label="状态">禁用</IxDescItem>
+          <IxEmpty v-if="!rightFileDetailInfo" description="选中文件/文件夹，查看详情" />
+          <IxDesc v-else header="单列数据" col="1" labelWidth="56px">
+            <IxDescItem label="文件名">{{rightFileDetailInfo.LeafName}}</IxDescItem>
+            <IxDescItem label="类型">禁用</IxDescItem>
             <IxDescItem label="操作人">saas</IxDescItem>
             <IxDescItem label="描述信息">优先保证网络会议带宽的使用</IxDescItem>
             <IxDescItem label="优先级">高</IxDescItem>
             <IxDescItem label="更新时间">2022-02-20 16:29</IxDescItem>
           </IxDesc>
-          <IxEmpty description="选中文件/文件夹，查看详情" />
         </IxCard>
         <IxIcon class="hover:color-#74ABFF" style="margin-top: 15px;padding-right:10px;font-size: 16px;cursor: pointer;"
           v-if="!showRightFileDetailFlag" @click="() => showRightFileDetailFn(true)" name="double-left" />

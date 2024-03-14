@@ -23,12 +23,26 @@ export type FileDisplayPropsType = {
 
 
 export type FileDataType = {
-  key: number
-  name: string
-  type: string
-  size: string
-  changeDate: string[]
-  deleteDate: string[]
+  Id?: number;
+  LeafName?: string;
+  Extension?: string;
+  Path?: string;
+  ParentFolderId?: number | null;
+  Idpath?: string;
+  IsFolder?: number;
+  FileType?: number;
+  CreatedDate?: string;
+  CreatedBy?: string;
+  UpdatedDate?: string;
+  UpdatedBy?: string;
+  DeletedDate?: string | null;
+  DeletedBy?: string | null;
+  VersionId?: string;
+  ItemHash?: string;
+  FileSize?: number;
+  PhysicalDirectory?: string;
+  IsDel?: number;
+  ItemFileMapUrl?: string | null;
 }
 
 

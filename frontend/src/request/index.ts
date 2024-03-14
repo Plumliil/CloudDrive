@@ -129,7 +129,7 @@ const requestHandler = <T, P>(url: string, method: methodType, paramsData?: P, c
   }
 }
 export const get = <T, P>(url: string,  paramsData?: P, config?: AxiosRequestConfig) => {
-    return RequestAxiosInstance<T, P>(url, 'get', { data: paramsData }, config)
+    return RequestAxiosInstance<T, P>(url, 'get', { params: {...paramsData} }, config)
 }
 export const post = <T, P>(url: string,  paramsData?: P, config?: AxiosRequestConfig) => {
     return RequestAxiosInstance<T, P>(url, 'post', { data: paramsData }, config)
